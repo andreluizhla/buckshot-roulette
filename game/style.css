@@ -28,4 +28,5 @@ img.bala{
 
 #cartucho{
     display: flex;
+    justify-content: flex-start;
 }

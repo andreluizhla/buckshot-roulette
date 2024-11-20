@@ -1,3 +1,30 @@
+import { ref, set } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+
+window.addEventListener("load", () => {
+    const database = window.firebaseDatabase;
+
+    if (!database) {
+        console.error("Firebase Database não foi inicializado.");
+        return;
+    }
+
+    // Testando o Firebase
+    const salaId = Math.random().toString(36).substr(2, 9);
+    
+    // Criando a referência correta usando ref() e set()
+    const salaRef = ref(database, `salas/${salaId}`);
+    set(salaRef, {
+        jogadores: {},
+        status: "aguardando",
+    }).then(() => {
+        console.log("Sala criada com sucesso!", salaId);
+        window.alert(`Sala criada! Código: ${salaId}`);
+    }).catch((error) => {
+        console.error("Erro ao criar sala:", error);
+    });
+});
+
+
 let cartucho_atual = []
 let num_vazio = 0
 let num_bala_verdade = 0
@@ -20,7 +47,7 @@ function geraVazio(){
     let variavel
     while (true){
         variavel = Math.ceil(Math.random() * 10)
-        if (7 > variavel > 0){
+        if (8 > variavel > 0){
             return variavel
         }
     }
@@ -51,8 +78,13 @@ function criaCartuho(){
 
 function embaralharCartucho(array) {
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1)); // Escolhe um índice aleatório
-        [array[i], array[j]] = [array[j], array[i]]; // Troca os elementos
+        
+        // Escolhe um índice aleatório
+        const j = Math.floor(Math.random() * (i + 1));
+
+        // Troca os elementos
+        [array[i], array[j]] = [array[j], array[i]]; 
+        
     }
     return array;
 }
@@ -72,4 +104,12 @@ document.getElementById('gerar-balas').onclick = () => {
             cartucho_site.innerHTML += img_bala_falsa
         }
     })
+}
+
+document.getElementById('shotgun').onclick = () =>{
+    if (cartucho_atual.length == 0){
+        window.alert('A arma não está carregada, clique para gerar as balas primeiro para atirar.')
+    } else {
+        
+    }
 }
