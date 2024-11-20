@@ -43,9 +43,6 @@ function criaCartuho(){
             if (c < num_bala_falsa){
                 cartucho_atual.push(false)
             }
-            if (c < num_vazio){
-                cartucho_atual.push(null)
-            }
         }
         c++
     }
@@ -68,22 +65,11 @@ document.getElementById('gerar-balas').onclick = () => {
     console.log(`Número de Balas Verdadeiras: ${num_bala_verdade}`)
     console.log(`Número de Balas Falsas: ${num_bala_falsa}`)
     console.log(`Cartucho Atual: ${cartucho_atual}`)
-    //var c = 0 
-    //while (c <= num_bala_verdade){
-    //    if(c == num_bala_verdade){
-    //        break
-    //    } else {
-    //        cartucho_site.innerHTML += img_bala_verdade
-    //        c++
-    //    }
-    //}
-    //c = 0
-    //while (c <= num_bala_falsa){
-    //    if(c == num_bala_falsa){
-    //        break
-    //    } else {
-    //        cartucho_site.innerHTML += img_bala_falsa
-    //        c++
-    //    }
-    //}
+    cartucho_atual.forEach(bala => {
+        if(bala == true){
+            cartucho_site.innerHTML += img_bala_verdade
+        } else {
+            cartucho_site.innerHTML += img_bala_falsa
+        }
+    })
 }
