@@ -1,6 +1,6 @@
 import { ref, set } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
 
-window.addEventListener("load", () => {
+document.getElementById("criar-sala").onclick = () => {
     const database = window.firebaseDatabase;
 
     if (!database) {
@@ -14,15 +14,14 @@ window.addEventListener("load", () => {
     // Criando a referência correta usando ref() e set()
     const salaRef = ref(database, `salas/${salaId}`);
     set(salaRef, {
-        jogadores: {},
-        status: "aguardando",
+        status: "aguardando"
     }).then(() => {
         console.log("Sala criada com sucesso!", salaId);
         window.alert(`Sala criada! Código: ${salaId}`);
     }).catch((error) => {
         console.error("Erro ao criar sala:", error);
     });
-});
+};
 
 
 let cartucho_atual = []
