@@ -41,9 +41,17 @@ let cartucho_site = document.querySelector('#cartucho')
 let img_bala_verdade = '<img src="../img/cartucho-verdadeiro.png" alt="Bala Verdadeira" class="bala">'
 let img_bala_falsa = '<img src="../img/cartucho-falso.png" alt="Bala Falsa" class="bala">'
 let shotgun = document.getElementById('shotgun')
-let audio = document.getElementById('audio')
-let sound_tiro = '../sounds/tiro.mp3'
-let sound_recarregando = '../sounds/recarregando.mp3'
+
+const audios = {
+    'tiro' : `sounds/tiro.mp3`,
+    'tirofake' : `sounds/tiro-fake.mp3`,
+    'recarregar' : `sounds/recarregando.mp3`
+}
+// let player = document.getElementById('player')
+const player = document.getElementById('player')
+// let sound_tiro_fake = '../sounds/tiro-fake.mp3'
+// let sound_tiro = '../sounds/tiro.mp3'
+// let sound_recarregando = '../sounds/recarregando.mp3'
 
 function geradorNumeroBalas(){
     let variavel
@@ -104,32 +112,36 @@ function embaralharCartucho(array) {
 function atualizaCartuchoSite(){
     cartucho_site.innerHTML = ''
     cartucho_atual.forEach(bala => {
-        if(bala == true){
-            cartucho_site.innerHTML += img_bala_verdade
-        } else {
-            cartucho_site.innerHTML += img_bala_falsa
-        }
+        cartucho_site.innerHTML += bala ? img_bala_verdade : img_bala_falsa
     })
 }
 
-document.getElementById('gerar-balas').onclick = () => {
+function som(tipoSom){
+    player.currentTime = 0
+
+    player.src = audios[tipoSom]
+    player.play()
+}
+
+document.getElementById('gerar-balas').onclick = async () => {
     criaBalas()
     criaCartuho()
     console.log(`Número de Vazio: ${num_vazio}`)
     console.log(`Número de Balas Verdadeiras: ${num_bala_verdade}`)
     console.log(`Número de Balas Falsas: ${num_bala_falsa}`)
     console.log(`Cartucho Atual: ${cartucho_atual}`)
+    await som('recarregar')
     atualizaCartuchoSite()
 }
 
 document.getElementById('shotgun').onclick = () =>{
     if (cartucho_atual.length > 0){
         if (cartucho_atual[0] == true){
+            som('tiro')
             shotgun.src = "../img/shotgun_atirando.png"
-            audio.src = sound_tiro
-            audio.play()
             cartucho_atual.splice(0, 1)
         } else {
+            som('tirofake')
             shotgun.src = "../img/shotgun.png"
             cartucho_atual.splice(0, 1)
         }
