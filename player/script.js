@@ -42,6 +42,6 @@ document.getElementById('entrar').onclick = () => {
         });
 
     salaRef.update({
-        jogador : app.firestore.fieldValue.arreyUnion(player)
+        //jogador : 
     })
 }

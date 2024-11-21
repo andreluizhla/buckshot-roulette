@@ -1,5 +1,5 @@
 // importa e cria e verifica as variaveis do banco de dados
-import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 const app = window.firebaseApp
 const database = window.firebaseDatabase
 if (!app){
@@ -40,6 +40,10 @@ let num_bala_falsa = 0
 let cartucho_site = document.querySelector('#cartucho')
 let img_bala_verdade = '<img src="../img/cartucho-verdadeiro.png" alt="Bala Verdadeira" class="bala">'
 let img_bala_falsa = '<img src="../img/cartucho-falso.png" alt="Bala Falsa" class="bala">'
+let shotgun = document.getElementById('shotgun')
+let audio = document.getElementById('audio')
+let sound_tiro = '../sounds/tiro.mp3'
+let sound_recarregando = '../sounds/recarregando.mp3'
 
 function geradorNumeroBalas(){
     let variavel
@@ -97,14 +101,8 @@ function embaralharCartucho(array) {
     return array;
 }
 
-document.getElementById('gerar-balas').onclick = () => {
+function atualizaCartuchoSite(){
     cartucho_site.innerHTML = ''
-    criaBalas()
-    criaCartuho()
-    console.log(`Número de Vazio: ${num_vazio}`)
-    console.log(`Número de Balas Verdadeiras: ${num_bala_verdade}`)
-    console.log(`Número de Balas Falsas: ${num_bala_falsa}`)
-    console.log(`Cartucho Atual: ${cartucho_atual}`)
     cartucho_atual.forEach(bala => {
         if(bala == true){
             cartucho_site.innerHTML += img_bala_verdade
@@ -114,10 +112,30 @@ document.getElementById('gerar-balas').onclick = () => {
     })
 }
 
+document.getElementById('gerar-balas').onclick = () => {
+    criaBalas()
+    criaCartuho()
+    console.log(`Número de Vazio: ${num_vazio}`)
+    console.log(`Número de Balas Verdadeiras: ${num_bala_verdade}`)
+    console.log(`Número de Balas Falsas: ${num_bala_falsa}`)
+    console.log(`Cartucho Atual: ${cartucho_atual}`)
+    atualizaCartuchoSite()
+}
+
 document.getElementById('shotgun').onclick = () =>{
-    if (cartucho_atual.length == 0){
-        window.alert('A arma não está carregada, clique para gerar as balas primeiro para atirar.')
+    if (cartucho_atual.length > 0){
+        if (cartucho_atual[0] == true){
+            shotgun.src = "../img/shotgun_atirando.png"
+            audio.src = sound_tiro
+            audio.play()
+            cartucho_atual.splice(0, 1)
+        } else {
+            shotgun.src = "../img/shotgun.png"
+            cartucho_atual.splice(0, 1)
+        }
+        atualizaCartuchoSite()
     } else {
-        
+        window.alert('A shotgun não está carregada, clique para gerar as balas primeiro para atirar.')
+        shotgun.src = "../img/shotgun.png"
     }
 }
