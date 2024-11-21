@@ -1,28 +1,47 @@
-import { getDatabase, set, ref, get, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
-
-const database = window.firebaseDatabase;
-
+// importa e cria e verifica as variaveis do banco de dados
+import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+const app = window.firebaseApp
+const database = window.firebaseDatabase
+if (!app){
+    div.error('Erro ao importar o APP')
+}
 if (!database) {
-    console.error("Firebase Database não foi inicializado.");
+    div.error("Firebase Database não foi inicializado.");
 }
 
-const player = window.prompt("Digite o seu nome para jogar:")
-// Testando o Firebase
-const salaId = window.prompt("Digite o código da sala:")
+let div = document.getElementById('dados')
 
-// Criando a referência correta usando ref() e set()
-const salaRef = ref(database, 'salas/', salaId);  // Caminho onde os dados estão armazenados
+document.getElementById('entrar').onclick = () => {
+    div.innerHTML = ''
+    const player = window.prompt("Digite o seu nome para jogar:")
+    const salaId = window.prompt("Digite o código da sala:")
+    
+    const salaRef = ref(database, 'salas/', salaId, '/');  // Caminho onde os dados estão armazenados
+    // const salaRef = database.colection('salas').doc(salaId)
+    
+    // update(salaRef, {
+    //     
+    //     jogador : firebase.firestore.FieldValue.arreyUnion(player),
+    //     status: "andamento"
+    // })
+    
+    div.innerHTML += `<p>Nome : ${player}</p>`
+    div.innerHTML += `<p>Sala do jogo : ${salaId}</p>`
+    div.innerHTML += `<p>Sala de referência : ${salaRef}</p>`
 
-update(salaRef, {
-    status: "andamento"
-})
 
-get(salaRef).then((snapshot) => {
-    if (snapshot.exists()) {
-        console.log(snapshot.val());  // Exibe os dados da sala
-    } else {
-        console.log("Não há dados disponíveis.");
-    }
-}).catch((error) => {
-    console.error("Erro ao ler dados:", error);
-});
+    get(salaRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            div.innerHTML += snapshot.val()  // Exibe os dados da sala
+            console.log(snapshot.val())
+        } else {
+            div.innerHTML += "Não há dados disponíveis."
+        }
+    }).catch((error) => {
+        div.innerHTML += "Erro ao ler dados: ", error
+        });
+
+    salaRef.update({
+        jogador : app.firestore.fieldValue.arreyUnion(player)
+    })
+}

@@ -1,7 +1,15 @@
-import { ref, set } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+// importa e cria e verifica as variaveis do banco de dados
+import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+const app = window.firebaseApp
+const database = window.firebaseDatabase
+if (!app){
+    console.error('Erro ao importar o APP')
+}
+if (!database) {
+    console.error("Firebase Database não foi inicializado.");
+}
 
 document.getElementById("criar-sala").onclick = () => {
-    const database = window.firebaseDatabase;
 
     if (!database) {
         console.error("Firebase Database não foi inicializado.");
@@ -14,7 +22,8 @@ document.getElementById("criar-sala").onclick = () => {
     // Criando a referência correta usando ref() e set()
     const salaRef = ref(database, `salas/${salaId}`);
     set(salaRef, {
-        status: "aguardando"
+        status: "aguardando",
+        jogadores : []
     }).then(() => {
         console.log("Sala criada com sucesso!", salaId);
         window.alert(`Sala criada! Código: ${salaId}`);
