@@ -77,11 +77,13 @@ document.getElementById('entrar').onclick = () => {
 }
 
 document.getElementById('criar-itens').onclick = () => {
-    let item_aleatorio = Math.floor(Math.random() * itens.length)
+    let item_aleatorio 
+    
     for (let lado = 0; lado < 2 ; lado++){
         for (let linha = 0; linha < 2; linha++){
             for (let coluna = 0; coluna < 2; coluna++){
-                mesa.push('item_aleatorio')[lado, linha, coluna]
+                item_aleatorio = Math.floor(Math.random() * itens.length)
+                mesa[lado][linha][coluna].push(itens[item_aleatorio])
             }
         }
     }
