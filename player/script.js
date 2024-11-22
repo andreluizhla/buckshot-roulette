@@ -58,7 +58,7 @@ function geradorNumeroBalas() {
 function geraVazio() {
     while (true) {
         let variavel = Math.ceil(Math.random() * 10);
-        if (8 > variavel > 0) return variavel;
+        if (variavel > 0 && variavel < 8) return variavel;
     }
 }
 
@@ -111,10 +111,12 @@ function som(tipoSom) {
 document.getElementById("gerar-balas").onclick = () => {
     criaBalas();
     criaCartucho();
-    console.log(`Número de Vazio: ${num_vazio}`);
-    console.log(`Número de Balas Verdadeiras: ${num_bala_verdade}`);
-    console.log(`Número de Balas Falsas: ${num_bala_falsa}`);
-    console.log(`Cartucho Atual: ${cartucho_atual}`);
+    console.group("Detalhes do cartucho");
+    console.log(`Número de vazio: ${num_vazio}`);
+    console.log(`Número de balas verdadeiras: ${num_bala_verdade}`);
+    console.log(`Número de balas falsas: ${num_bala_falsa}`);
+    console.log(`Cartucho atual:`, cartucho_atual);
+    console.groupEnd();
     som("recarregar");
     atualizaCartuchoSite();
 };
