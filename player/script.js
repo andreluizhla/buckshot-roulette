@@ -132,7 +132,8 @@ document.getElementById("shotgun").onclick = () => {
 };
 
 // Controle de vida
-let vida = 3;
+const max_vida = 4;
+let vida = 3
 for (let c = 0; c < vida; c++) {
     const iconeVida = document.createElement("i");
     iconeVida.className = "bx bxs-bolt";
