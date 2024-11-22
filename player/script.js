@@ -79,7 +79,7 @@ document.addEventListener('mousemove', (event) => {
         descricaoDiv.style.left = event.pageX + 'px';
         descricaoDiv.style.top = event.pageY + 'px';
     }
-});
+})
     
 document.getElementById('criar-itens').onclick = () => {
     const img_itens = document.querySelectorAll('.item')
@@ -89,7 +89,7 @@ document.getElementById('criar-itens').onclick = () => {
     let item_aleatorio
     let cont = 0
     
-    for (let lado = 0; lado < 1 ; lado++){
+    for (let lado = 0; lado < 2; lado++){
         for (let linha = 0; linha < 2; linha++){
             for (let coluna = 0; coluna < 2; coluna++){
                 // aleatoriza um índice para ter um item aleatório
