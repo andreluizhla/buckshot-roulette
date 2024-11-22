@@ -68,7 +68,7 @@ main{
 }
 
 img#shotgun{
-    width: 50vw;
+    max-width: 50vw;
 }
 
 img.bala{
@@ -79,7 +79,7 @@ img.bala{
 
 #cartucho{
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 img{

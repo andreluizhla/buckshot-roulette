@@ -22,6 +22,7 @@
                         <div class="div"><img src alt class="item" id="item4"></div>
                     </div>
                 </span>
+                <img src="../img/shotgun.png" alt="Shotgun das braba" id="shotgun">
                 <span id="parte-esquerda">
                     <div class="parte-cima div">
                         <div class="div"><img src alt class="item" id="item5"></div>
@@ -33,18 +34,16 @@
                     </div>
                 </span>
             </span>
-            <img src="../img/shotgun.png" alt="Shotgun das braba" id="shotgun">
+            <audio  src="" id="audio" type="audio/mpeg"></audio>
+            <div id="botoes">
+                <button id="gerar-balas">Gerar Balas</button>
+                <button id="criar-sala">Criar Sala</button>
+                <button id="entrar">Entrar em uma sala</button>
+                <button id="criar-itens">Criar itens (Funcionalidade em Teste)</button>
+            </div>
+            
         </main>
-        <audio  src="" id="audio" type="audio/mpeg"></audio>
-        <div id="cartucho">
-        </div>
-        <div id="botoes">
-            <button id="gerar-balas">Gerar Balas</button>
-            <button id="criar-sala">Criar Sala</button>
-            <button id="entrar">Entrar em uma sala</button>
-            <button id="criar-itens">Criar itens (Funcionalidade em Teste)</button>
-        </div>
-
+        <div id="cartucho"></div>
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
             import { getDatabase } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";

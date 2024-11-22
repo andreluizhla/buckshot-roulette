@@ -58,7 +58,7 @@ function geradorNumeroBalas() {
 function geraVazio() {
     while (true) {
         let variavel = Math.ceil(Math.random() * 10);
-        if (variavel > 0 && variavel < 8) return variavel;
+        if (8 > variavel > 0) return variavel;
     }
 }
 
@@ -74,7 +74,6 @@ function criaCartucho() {
     while (c < 10) {
         if (c < num_bala_verdade) cartucho_atual.push(true);
         else if (c < num_bala_verdade + num_bala_falsa) cartucho_atual.push(false);
-        else cartucho_atual.push(null);
         c++;
     }
     cartucho_atual = embaralharCartucho(cartucho_atual);
