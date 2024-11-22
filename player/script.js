@@ -3,10 +3,10 @@ import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.c
 const app = window.firebaseApp
 const database = window.firebaseDatabase
 if (!app){
-    div.error('Erro ao importar o APP')
+    console.error('Erro ao importar o APP')
 }
 if (!database) {
-    div.error("Firebase Database não foi inicializado.");
+    console.error("Firebase Database não foi inicializado.");
 }
 
 // Definir classe Item
@@ -40,9 +40,6 @@ const mesa = [[[[], []], [[], []]], [[[], []], [[], []]]]
 
 document.getElementById('entrar').onclick = () => {
 
-    let div = document.getElementById('dados')
-    div.innerHTML = ''
-
     // const player = window.prompt("Digite o seu nome para jogar:")
     const salaId = window.prompt("Digite o código da sala:")
     
@@ -58,20 +55,19 @@ document.getElementById('entrar').onclick = () => {
         //     status: "andamento"
         // })
         
-    div.innerHTML += `<p>Nome : ${player}</p>`
-    div.innerHTML += `<p>Sala do jogo : ${salaId}</p>`
-    div.innerHTML += `<p>Sala de referência : ${salaRef}</p>`
+    console.log('Nome : ', player)
+    console.log('Sala do jogo : ', salaId)
+    console.log('Sala de referência : ', salaRef)
     
     
     get(salaRef).then((snapshot) => {
         if (snapshot.exists()) {
-            div.innerHTML += snapshot.val()  // Exibe os dados da sala
-            console.log(snapshot.val())
+            console.log(snapshot.val())  // Exibe os dados da sala
         } else {
-            div.innerHTML += "Não há dados disponíveis."
+            console.error("Não há dados disponíveis.")
         }
     }).catch((error) => {
-        div.innerHTML += "Erro ao ler dados: ", error
+        console.error("Erro ao ler dados: ", error)
     });
     
     salaRef.update({

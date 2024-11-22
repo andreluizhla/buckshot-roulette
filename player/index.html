@@ -15,7 +15,8 @@
         body{
             height: 95vh;
         }
-        content#mesa{
+
+        #mesa{
             height: 95vh;
             width: 99%;
             display: flex;
@@ -37,7 +38,7 @@
             height: 100%;
         }
 
-        span#parte-direita, span#parte-esquerda{
+        #parte-direita, #parte-esquerda{
             display: grid;
             height: 100%;
             width: 50%;
@@ -57,7 +58,7 @@
             justify-content: end;
         }
 
-        span#barra-vida{
+        #barra-vida{
             background-color: black;
         }
 
@@ -74,34 +75,31 @@
 <body>
     <div id="descricao-item"></div>
     <header><span id="barra-vida"></span></header>
-    <content id="mesa">
+    <span id="mesa">
         <span id="parte-direita">
             <div class="parte-cima">
-                <div><img src="" alt="" class="item" id="item1" onmouseenter=""></div>
-                <div><img src="" alt="" class="item" id="item2"></div>
+                <div><img src alt class="item" id="item1"></div>
+                <div><img src alt class="item" id="item2"></div>
             </div>
             <div class="parte-baixo">
-                <div><img src="" alt="" class="item" id="item3"></div>
-                <div><img src="" alt="" class="item" id="item4"></div>
+                <div><img src alt class="item" id="item3"></div>
+                <div><img src alt class="item" id="item4"></div>
             </div>
         </span>
         <span id="parte-esquerda">
             <div class="parte-cima">
-                <div><img src="" alt="" class="item" id="item5"></div>
-                <div><img src="" alt="" class="item" id="item6"></div>
+                <div><img src alt class="item" id="item5"></div>
+                <div><img src alt class="item" id="item6"></div>
             </div>
             <div class="parte-baixo">
-                <div><img src="" alt="" class="item" id="item7"></div>
-                <div><img src="" alt="" class="item" id="item8"></div>
+                <div><img src alt class="item" id="item7"></div>
+                <div><img src alt class="item" id="item8"></div>
             </div>
-        </spa>
-    </content>
-    <p id="descricao"></p>
+        </span>
+    </span>
     <button id="entrar">Entrar em uma sala</button>
     <button id="criar-itens">Criar itens (Funcionalidade em Teste)</button>
-    <span id="dados">
-        
-    </span>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
         import { getDatabase } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
