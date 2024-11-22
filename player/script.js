@@ -94,26 +94,34 @@ document.getElementById('criar-itens').onclick = () => {
             for (let coluna = 0; coluna < 2; coluna++){
                 // aleatoriza um índice para ter um item aleatório
                 index_aleatorio = Math.floor(Math.random() * itens.length)
-                item_aleatorio = itens[index_aleatorio]
+                const item_aleatorio = itens[index_aleatorio]
                 
                 // Adiciona item na lista
                 mesa[lado][linha][coluna].push(item_aleatorio)
 
                 // altera a imagem do item e o texto alternativo
                 img_itens[cont].src = item_aleatorio.src
-                img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`
+                img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
+                // Sim, pode parecer estranho o que eu vou dizer
+                // mas, se alguêm tirar o ponto e virgua
+                // da linha de alterar o parâmentro alt da imagem
+                // o site quebra
+                // pode acreditar, ele vai colocar apenas 1 img e pronto, morreu
+
                 
                 // Adiciona eventos para mostrar e esconder a descrição
-                img_itens[cont].addEventListener('mouseover', (event) =>{
-                    descricaoDiv.style.display = 'block'
-                    descricaoDiv.style.left = event.pageX + 'px'
-                    descricaoDiv.style.top = event.pageY + 'px'
-                    descricaoDiv.innerHTML = `<strong>${item_aleatorio.nome}:</strong><br>${item_aleatorio.descricao}`
-                })
+                ((img, item) => {
+                    img.addEventListener('mouseover', (event) => {
+                        descricaoDiv.style.display = 'block';
+                        descricaoDiv.style.left = event.pageX + 'px';
+                        descricaoDiv.style.top = event.pageY + 'px';
+                        descricaoDiv.innerHTML = `<strong>${item.nome}</strong><br>${item.descricao}`;
+                    });
 
-                img_itens[cont].addEventListener('mouseout', () => {
-                    descricaoDiv.style.display = 'none'
-                })
+                    img.addEventListener('mouseout', () => {
+                        descricaoDiv.style.display = 'none';
+                    });
+                })(img_itens[cont], item_aleatorio);
 
                 cont++
             }
