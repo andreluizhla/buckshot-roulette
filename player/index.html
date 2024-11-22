@@ -5,125 +5,125 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
         <title>Jogador</title>
-    <style>
-        *{
-            margin: 0px;
-            padding: 0px;
-        }
-        
-        body{
-            height: 95vh;
-        }
-        
-        header {
-            position: absolute;
-            top: 0;
-            width: 100vw;
-            display: flex;
-            justify-content: flex-end;
-        }
-        
-        #barra-vida{
-            background-color: black;
-            height: 20px;
-            width: 200px;
-        }
+        <style>
+            *{
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            body{
+                height: 95vh;
+            }
+            
+    
+            #descricao-item{
+                position: absolute;
+                display: none;
+                background: rgba(0, 0, 0, 0.75);
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            header {
+                position: absolute;
+                top: 0;
+                width: 100vw;
+                display: flex;
+                justify-content: flex-end;
+            }
+            
+            #barra-vida{
+                background-color: black;
+                height: 20px;
+                width: 200px;
+            }
 
-        #mesa{
-            height: 95vh;
-            width: 99%;
-            display: flex;
-        }
+            #mesa{
+                height: 95vh;
+                width: 99%;
+                display: flex;
+            }
 
-        .div{
-            width: 100%;
-            height: 100%;
-            border: 3px solid black;
-            justify-content: center;
-            text-align: center;
-            display: grid;
-            align-items: center;
-        }
+            .div{
+                width: 100%;
+                height: 100%;
+                border: 3px solid black;
+                justify-content: center;
+                text-align: center;
+                display: grid;
+                align-items: center;
+            }
 
-        .parte-cima, .parte-baixo{
-            width: 100%;
-            display: flex;
-            height: 100%;
-        }
+            .parte-cima, .parte-baixo{
+                width: 100%;
+                display: flex;
+                height: 100%;
+            }
 
-        #parte-direita, #parte-esquerda{
-            display: grid;
-            height: 100%;
-            width: 50%;
-        }
+            #parte-direita, #parte-esquerda{
+                display: grid;
+                height: 100%;
+                width: 50%;
+            }
 
-        img{
-            max-width: 300px;
-            max-height: 300px;
-            text-align: center;
-            justify-content: center;
-        }
-
-        #descricao-item{
-            position: absolute;
-            display: none;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <div id="descricao-item"></div>
-    <header><span id="barra-vida"></span></header>
-    <span id="mesa">
-        <span id="parte-direita">
-            <div class="parte-cima div">
-                <div class="div"><img src alt class="item" id="item1"></div>
-                <div class="div"><img src alt class="item" id="item2"></div>
-            </div>
-            <div class="parte-baixo div">
-                <div class="div"><img src alt class="item" id="item3"></div>
-                <div class="div"><img src alt class="item" id="item4"></div>
-            </div>
+            img{
+                max-width: 300px;
+                max-height: 300px;
+                text-align: center;
+                justify-content: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="descricao-item"></div>
+        <header><span id="barra-vida"></span></header>
+        <span id="mesa">
+            <span id="parte-direita">
+                <div class="parte-cima div">
+                    <div class="div"><img src alt class="item" id="item1"></div>
+                    <div class="div"><img src alt class="item" id="item2"></div>
+                </div>
+                <div class="parte-baixo div">
+                    <div class="div"><img src alt class="item" id="item3"></div>
+                    <div class="div"><img src alt class="item" id="item4"></div>
+                </div>
+            </span>
+            <span id="parte-esquerda">
+                <div class="parte-cima div">
+                    <div class="div"><img src alt class="item" id="item5"></div>
+                    <div class="div"><img src alt class="item" id="item6"></div>
+                </div>
+                <div class="parte-baixo div">
+                    <div class="div"><img src alt class="item" id="item7"></div>
+                    <div class="div"><img src alt class="item" id="item8"></div>
+                </div>
+            </span>
         </span>
-        <span id="parte-esquerda">
-            <div class="parte-cima div">
-                <div class="div"><img src alt class="item" id="item5"></div>
-                <div class="div"><img src alt class="item" id="item6"></div>
-            </div>
-            <div class="parte-baixo div">
-                <div class="div"><img src alt class="item" id="item7"></div>
-                <div class="div"><img src alt class="item" id="item8"></div>
-            </div>
-        </span>
-    </span>
-    <button id="entrar">Entrar em uma sala</button>
-    <button id="criar-itens">Criar itens (Funcionalidade em Teste)</button>
+        <button id="entrar">Entrar em uma sala</button>
+        <button id="criar-itens">Criar itens (Funcionalidade em Teste)</button>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getDatabase } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyC_zuUFWuikE7cnw6G0SyuTHGfvk0Y0iWs",
-            authDomain: "andre-buckshot-roulette.firebaseapp.com",
-            projectId: "andre-buckshot-roulette",
-            storageBucket: "andre-buckshot-roulette.firebasestorage.app",
-            messagingSenderId: "351821686011",
-            appId: "1:351821686011:web:bed206dccc1a6adacb3c5e",
-            measurementId: "G-R05R97EXEY"
-        };
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+            import { getDatabase } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+            
+            const firebaseConfig = {
+                apiKey: "AIzaSyC_zuUFWuikE7cnw6G0SyuTHGfvk0Y0iWs",
+                authDomain: "andre-buckshot-roulette.firebaseapp.com",
+                projectId: "andre-buckshot-roulette",
+                storageBucket: "andre-buckshot-roulette.firebasestorage.app",
+                messagingSenderId: "351821686011",
+                appId: "1:351821686011:web:bed206dccc1a6adacb3c5e",
+                measurementId: "G-R05R97EXEY"
+            };
 
-        
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        
-        // Exporta para o escopo global
-        window.firebaseApp = app;
-        window.firebaseDatabase = database;
-    </script>
-    <script type="module" src="script.js"></script>
-</body>
+            
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+            
+            // Exporta para o escopo global
+            window.firebaseApp = app;
+            window.firebaseDatabase = database;
+        </script>
+        <script type="module" src="script.js"></script>
+    </body>
 </html>

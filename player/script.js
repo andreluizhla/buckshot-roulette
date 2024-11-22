@@ -20,14 +20,14 @@ class Item {
 
 // Variáveis usando a classe Item
 const vacina = new Item("Vacina do SUS", "../img/vacina.png", "Esse item faz com que você pegue emprestado (você rouba) um item do seu amiguinho e usa imediatamente")
-const nokia = new Item('Nokia', '../img/nokia.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação')
-const cerra = new Item('Cerra do Tio', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno')
-const cingarro = new Item('Cingarro', '../img/cingarro.png', 'Ganha +1 de vida. Sim... fumar faz bem para a saúde')
-const heineken = new Item('Heineken Batizada', '../img/heineken.png', 'Descarta a bala atual. Te transforma em um cachaceiro do carai (fal o L)')
-const lupa = new Item('Lupa do tio Sherlock', '../img/lupa.png', 'Veja qual é a bala atual')
-const paracetamol = new Item('Paracetamol Vencido', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida')
-const reverso = new Item('Carta Reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda')
-const bloqueio = new Item('Carta Bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer')
+const nokia = new Item('Nokia (Celular do André)', '../img/nokia.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação. Deve ser Telemarketing de São Paulo.')
+const cerra = new Item('Cerra do Tio', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno. Não pe pergunte como conseguiram essa cerra.')
+const cingarro = new Item('Cingarro do seu Pai', '../img/cingarro.png', 'Ganha +1 de vida. E sim... aqui, fumar faz bem para a saúde')
+const heineken = new Item('Heineken Batizada', '../img/heineken.png', 'Descarta a bala atual. Te transforma em um cachaceiro do carai (fal o L).')
+const lupa = new Item('Lupa do Tio Sherlock', '../img/lupa.png', 'Veja qual é a bala atual. Antigamente era usado para ver cu de curioso')
+const paracetamol = new Item('Paracetamol Vencido', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida.')
+const reverso = new Item('Carta Reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda. Não acontece nada quando tem apenas 2 jogadores.')
+const bloqueio = new Item('Carta Bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer (Exceto você mesmo). Seria uma pena se você conseguisse fazer isso.')
 
 
 // Lista dos itens
