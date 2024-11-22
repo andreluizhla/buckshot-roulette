@@ -19,11 +19,11 @@ class Item {
 }
 
 // Variáveis usando a classe Item
-const vacina = new Item("Vacina do SUS", "../img/vacina.png", "Esse item faz co mque você pegue imprestado (rouba) um item do seu amiguinho e usa imediatamente")
+const vacina = new Item("Vacina do SUS", "../img/vacina.png", "Esse item faz com que você pegue emprestado (você rouba) um item do seu amiguinho e usa imediatamente")
 const nokia = new Item('Nokia', '../img/nokia.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação')
 const cerra = new Item('Cerra do Tio', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno')
-const cingarro = new Item('Cingarro', '../img/cingarro.png', 'Ganha +1 de vida')
-const heineken = new Item('Heineken', '../img/heineken.png', 'Descarta a bala atual')
+const cingarro = new Item('Cingarro', '../img/cingarro.png', 'Ganha +1 de vida. Sim... fumar faz bem para a saúde')
+const heineken = new Item('Heineken Batizada', '../img/heineken.png', 'Descarta a bala atual. Te transforma em um cachaceiro do carai (fal o L)')
 const lupa = new Item('Lupa do tio Sherlock', '../img/lupa.png', 'Veja qual é a bala atual')
 const paracetamol = new Item('Paracetamol Vencido', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida')
 const reverso = new Item('Carta Reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda')
@@ -85,8 +85,7 @@ document.getElementById('criar-itens').onclick = () => {
     const img_itens = document.querySelectorAll('.item')
     const descricaoDiv = document.getElementById('descricao-item')
 
-    let index_aleatorio 
-    let item_aleatorio
+    let index_aleatorio
     let cont = 0
     
     for (let lado = 0; lado < 2; lado++){
