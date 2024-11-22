@@ -9,8 +9,7 @@ if (!database) {
     div.error("Firebase Database não foi inicializado.");
 }
 
-let div = document.getElementById('dados')
-
+// Definir classe Item
 class Item {
     constructor(nome, src, descricao) {
         this.nome = nome;
@@ -19,22 +18,31 @@ class Item {
     }
 }
 
-var adrenalina = new Item("adrenalina", "../img/adrenalina.png", "Esse item faz co mque você pegue imprestado (rouba) um item do seu amiguinho e usa imediatamente")
-var celular = new Item('celular', '../img/celular.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação')
-var cerra = new Item('cerra', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno')
-var cigarro = new Item('cigarro', '../img/cigarro.png', 'Ganha +1 de vida')
-var heineken = new Item('heineken', '../img/heineken.png', 'Descarta a bala atual')
-var lupa = new Item('lupa', '../img/lupa.png', 'Veja qual é a bala atual')
-var paracetamol = new Item('paracetamol', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida')
-var reverso = new Item('reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda')
-var bloqueio = new Item('bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer')
+// Variáveis usando a classe Item
+const vacina = new Item("Vacina do SUS", "../img/vacina.png", "Esse item faz co mque você pegue imprestado (rouba) um item do seu amiguinho e usa imediatamente")
+const nokia = new Item('Nokia', '../img/nokia.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação')
+const cerra = new Item('Cerra do Tio', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno')
+const cingarro = new Item('Cingarro', '../img/cingarro.png', 'Ganha +1 de vida')
+const heineken = new Item('Heineken', '../img/heineken.png', 'Descarta a bala atual')
+const lupa = new Item('Lupa do tio Sherlock', '../img/lupa.png', 'Veja qual é a bala atual')
+const paracetamol = new Item('Paracetamol Vencido', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida')
+const reverso = new Item('Carta Reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda')
+const bloqueio = new Item('Carta Bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer')
 
-let itens = [adrenalina, celular, cerra, cigarro, heineken, lupa, paracetamol, reverso, bloqueio]
-let mesa = [[[[], []], [[], []]], [[[], []], [[], []]]]
+
+// Lista dos itens
+const itens = [vacina, nokia, cerra, cingarro, heineken, lupa, paracetamol, reverso, bloqueio]
+
+// Lista da mesa
+// Mapa da mesa: [ mesa [ lado [ linha [ coluna ] ] ]]
+const mesa = [[[[], []], [[], []]], [[[], []], [[], []]]]
 
 
 document.getElementById('entrar').onclick = () => {
+
+    let div = document.getElementById('dados')
     div.innerHTML = ''
+
     // const player = window.prompt("Digite o seu nome para jogar:")
     const salaId = window.prompt("Digite o código da sala:")
     
@@ -76,7 +84,7 @@ document.getElementById('criar-itens').onclick = () => {
     let index_aleatorio 
     let item_aleatorio
     let cont = 0
-    for (let lado = 0; lado < 2 ; lado++){
+    for (let lado = 0; lado < 1 ; lado++){
         for (let linha = 0; linha < 2; linha++){
             for (let coluna = 0; coluna < 2; coluna++){
                 index_aleatorio = Math.floor(Math.random() * itens.length)
