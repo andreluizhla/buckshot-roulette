@@ -45,9 +45,7 @@ document.getElementById('entrar').onclick = () => {
     
     
     // Caminho onde os dados estão armazenados:
-    const salaRef = ref(database, 'salas/', salaId);  
-    
-    // const salaRef = database.colection('salas').doc(salaId)
+    const salaRef = ref(database, 'salas/', salaId);
     
     // update(salaRef, {
         //     
@@ -74,6 +72,14 @@ document.getElementById('entrar').onclick = () => {
         //jogador : 
     })
 }
+
+document.addEventListener('mousemove', (event) => {
+    const descricaoDiv = document.getElementById('descricao-item');
+    if (descricaoDiv.style.display === 'block') {
+        descricaoDiv.style.left = event.pageX + 'px';
+        descricaoDiv.style.top = event.pageY + 'px';
+    }
+});
     
 document.getElementById('criar-itens').onclick = () => {
     const img_itens = document.querySelectorAll('.item')
