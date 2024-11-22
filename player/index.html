@@ -4,103 +4,46 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-        <title>Jogador</title>
-        <style>
-            *{
-                margin: 0px;
-                padding: 0px;
-            }
-            
-            body{
-                height: 95vh;
-            }
-            
-    
-            #descricao-item{
-                position: absolute;
-                display: none;
-                background: rgba(0, 0, 0, 0.75);
-                color: white;
-                padding: 10px;
-                border-radius: 5px;
-            }
-            header {
-                position: absolute;
-                top: 0;
-                width: 100vw;
-                display: flex;
-                justify-content: flex-end;
-            }
-            
-            #barra-vida{
-                background-color: black;
-                height: 20px;
-                width: 200px;
-            }
-
-            #mesa{
-                height: 95vh;
-                width: 99%;
-                display: flex;
-            }
-
-            .div{
-                width: 100%;
-                height: 100%;
-                border: 3px solid black;
-                justify-content: center;
-                text-align: center;
-                display: grid;
-                align-items: center;
-            }
-
-            .parte-cima, .parte-baixo{
-                width: 100%;
-                display: flex;
-                height: 100%;
-            }
-
-            #parte-direita, #parte-esquerda{
-                display: grid;
-                height: 100%;
-                width: 50%;
-            }
-
-            img{
-                max-width: 300px;
-                max-height: 300px;
-                text-align: center;
-                justify-content: center;
-            }
-        </style>
+        <link rel="stylesheet" href="style.css">
+        <title>Buckshot Roulette Brasileiro</title>
     </head>
     <body>
         <div id="descricao-item"></div>
         <header><span id="barra-vida"></span></header>
-        <span id="mesa">
-            <span id="parte-direita">
-                <div class="parte-cima div">
-                    <div class="div"><img src alt class="item" id="item1"></div>
-                    <div class="div"><img src alt class="item" id="item2"></div>
-                </div>
-                <div class="parte-baixo div">
-                    <div class="div"><img src alt class="item" id="item3"></div>
-                    <div class="div"><img src alt class="item" id="item4"></div>
-                </div>
+        <main>
+            <span id="mesa">
+                <span id="parte-direita">
+                    <div class="parte-cima">
+                        <div class="div"><img src alt class="item" id="item1"></div>
+                        <div class="div"><img src alt class="item" id="item2"></div>
+                    </div>
+                    <div class="parte-baixo">
+                        <div class="div"><img src alt class="item" id="item3"></div>
+                        <div class="div"><img src alt class="item" id="item4"></div>
+                    </div>
+                </span>
+                <span id="parte-esquerda">
+                    <div class="parte-cima div">
+                        <div class="div"><img src alt class="item" id="item5"></div>
+                        <div class="div"><img src alt class="item" id="item6"></div>
+                    </div>
+                    <div class="parte-baixo div">
+                        <div class="div"><img src alt class="item" id="item7"></div>
+                        <div class="div"><img src alt class="item" id="item8"></div>
+                    </div>
+                </span>
             </span>
-            <span id="parte-esquerda">
-                <div class="parte-cima div">
-                    <div class="div"><img src alt class="item" id="item5"></div>
-                    <div class="div"><img src alt class="item" id="item6"></div>
-                </div>
-                <div class="parte-baixo div">
-                    <div class="div"><img src alt class="item" id="item7"></div>
-                    <div class="div"><img src alt class="item" id="item8"></div>
-                </div>
-            </span>
-        </span>
-        <button id="entrar">Entrar em uma sala</button>
-        <button id="criar-itens">Criar itens (Funcionalidade em Teste)</button>
+            <img src="../img/shotgun.png" alt="Shotgun das braba" id="shotgun">
+        </main>
+        <audio  src="" id="audio" type="audio/mpeg"></audio>
+        <div id="cartucho">
+        </div>
+        <div id="botoes">
+            <button id="gerar-balas">Gerar Balas</button>
+            <button id="criar-sala">Criar Sala</button>
+            <button id="entrar">Entrar em uma sala</button>
+            <button id="criar-itens">Criar itens (Funcionalidade em Teste)</button>
+        </div>
 
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
