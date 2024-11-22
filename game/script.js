@@ -43,12 +43,12 @@ let img_bala_falsa = '<img src="../img/cartucho-falso.png" alt="Bala Falsa" clas
 let shotgun = document.getElementById('shotgun')
 
 const audios = {
-    'tiro' : `sounds/tiro.mp3`,
-    'tirofake' : `sounds/tiro-fake.mp3`,
-    'recarregar' : `sounds/recarregando.mp3`
+    'tiro' : `../sounds/tiro.mp3`,
+    'tirofake' : `../sounds/tiro-fake.mp3`,
+    'recarregar' : `../sounds/recarregando.mp3`
 }
-// let player = document.getElementById('player')
-const player = document.getElementById('player')
+// let audio = document.getElementById('audio')
+const audio = document.getElementById('audio')
 // let sound_tiro_fake = '../sounds/tiro-fake.mp3'
 // let sound_tiro = '../sounds/tiro.mp3'
 // let sound_recarregando = '../sounds/recarregando.mp3'
@@ -117,20 +117,20 @@ function atualizaCartuchoSite(){
 }
 
 function som(tipoSom){
-    player.currentTime = 0
-
-    player.src = audios[tipoSom]
-    player.play()
+    audio.currentTime = 0
+    audio.src = audios[tipoSom]
+    audio.play()
 }
 
-document.getElementById('gerar-balas').onclick = async () => {
+
+document.getElementById('gerar-balas').onclick = () => {
     criaBalas()
     criaCartuho()
     console.log(`Número de Vazio: ${num_vazio}`)
     console.log(`Número de Balas Verdadeiras: ${num_bala_verdade}`)
     console.log(`Número de Balas Falsas: ${num_bala_falsa}`)
     console.log(`Cartucho Atual: ${cartucho_atual}`)
-    await som('recarregar')
+    som('recarregar')
     atualizaCartuchoSite()
 }
 
