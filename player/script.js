@@ -80,19 +80,39 @@ document.getElementById('entrar').onclick = () => {
 }
     
 document.getElementById('criar-itens').onclick = () => {
-    let img_itens = document.querySelectorAll('.item')
+    const img_itens = document.querySelectorAll('.item')
+    const descricaoDiv = document.getElementById('descricao-item')
+
     let index_aleatorio 
     let item_aleatorio
     let cont = 0
+    
     for (let lado = 0; lado < 1 ; lado++){
         for (let linha = 0; linha < 2; linha++){
             for (let coluna = 0; coluna < 2; coluna++){
+                // aleatoriza um índice para ter um item aleatório
                 index_aleatorio = Math.floor(Math.random() * itens.length)
                 item_aleatorio = itens[index_aleatorio]
+                
+                // Adiciona item na lista
                 mesa[lado][linha][coluna].push(item_aleatorio)
+
+                // altera a imagem do item e o texto alternativo
                 img_itens[cont].src = item_aleatorio.src
                 img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`
                 
+                // Adiciona eventos para mostrar e esconder a descrição
+                img_itens[cont].addEventListener('mouseover', (event) =>{
+                    descricaoDiv.style.display = 'block'
+                    descricaoDiv.style.left = event.pageX + 'px'
+                    descricaoDiv.style.top = event.pageY + 'px'
+                    descricaoDiv.innerHTML = `<strong>${item_aleatorio.nome}:</strong><br>${item_aleatorio.descricao}`
+                })
+
+                img_itens[cont].addEventListener('mouseout', () => {
+                    descricaoDiv.style.display = 'none'
+                })
+
                 cont++
             }
         }
