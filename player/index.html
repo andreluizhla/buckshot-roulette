@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogador</title>
     <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+
         body{
             height: 95vh;
         }
@@ -19,6 +24,10 @@
             height: 100%;
             border: 3px solid black;
             margin: 3px;
+            justify-content: center;
+            text-align: center;
+            display: grid;
+            align-items: center;
         }
 
         div.parte-cima, div.parte-baixo{
@@ -27,36 +36,48 @@
             height: 100%;
         }
 
-        span#parte-direito, span#parte-direito{
+        span#parte-direita, span#parte-esquerda{
             display: grid;
             height: 100%;
             width: 50%;
+        }
+
+        img{
+            max-width: 300px;
+            max-height: 300px;
+            text-align: center;
+            justify-content: center;
+        }
+
+        img:hover{
+            
         }
     </style>
 </head>
 <body>
     <content id="mesa">
-        <span id="parte-direto">
+        <span id="parte-direita">
             <div class="parte-cima">
-                <div id="item1"></div>
-                <div id="item2"></div>
+                <div><img src="" alt="" class="item" id="item1" onmouseenter=""></div>
+                <div><img src="" alt="" class="item" id="item2"></div>
             </div>
             <div class="parte-baixo">
-                <div id="item3"></div>
-                <div id="item4"></div>
+                <div><img src="" alt="" class="item" id="item3"></div>
+                <div><img src="" alt="" class="item" id="item4"></div>
             </div>
         </span>
-        <span id="parte-esquerdo">
+        <span id="parte-esquerda">
             <div class="parte-cima">
-                <div id="item5"></div>
-                <div id="item6"></div>
+                <div><img src="" alt="" class="item" id="item5"></div>
+                <div><img src="" alt="" class="item" id="item6"></div>
             </div>
             <div class="parte-baixo">
-                <div id="item7"></div>
-                <div id="item8"></div>
+                <div><img src="" alt="" class="item" id="item7"></div>
+                <div><img src="" alt="" class="item" id="item8"></div>
             </div>
         </spa>
     </content>
+    <p id="descricao"></p>
     <button id="entrar">Entrar em uma sala</button>
     <button id="criar-itens">Criar itens (Funcionalidade em Teste)</button>
     <span id="dados">
