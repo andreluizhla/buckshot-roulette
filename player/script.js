@@ -89,11 +89,16 @@ function embaralharCartucho(array) {
 
 function atualizaCartuchoSite() {
     cartucho_site.innerHTML = "";
+    let c = 0
     cartucho_atual.forEach((bala) => {
         cartucho_site.innerHTML += bala
             ? '<img src="../img/cartucho-verdadeiro.png" alt="Bala Verdadeira" class="bala">'
             : '<img src="../img/cartucho-falso.png" alt="Bala Falsa" class="bala">';
+        c++
     });
+    if (c < 10) 
+        for (c; c < 10; c++)
+            cartucho_site.innerHTML += '<img src="../img/cartucho-nada.png" alt="Nada" class="bala">'
 }
 
 function som(tipoSom) {
@@ -153,7 +158,7 @@ const itens = [
     new Item('Lupa do Tio Sherlock', '../img/lupa.png', 'Veja qual é a bala atual. Antigamente era usado para ver cu de curioso'),
     new Item('Paracetamol Vencido', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida.'),
     new Item('Carta Reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda. Não acontece nada quando tem apenas 2 jogadores.'),
-    new Item('Carta Bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer (Exceto você mesmo). Seria uma pena se você conseguisse fazer isso.')
+    new Item('Carta Bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer (Exceto você mesmo). É uma pena que você não consegue se bloquear.')
 ]
 
 // Lista da mesa
