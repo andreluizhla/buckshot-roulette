@@ -1,39 +1,15 @@
-/* ====== Reset e Configurações Globais ====== */
-* {
-    padding: 0;
-    margin: 0;
+*{
+    padding: 0px;
+    margin: 0px;
     align-items: center;
 }
 
-body {
+body{
     height: 95vh;
 }
 
-/* ====== Elementos Gerais ====== */
-img {
-    max-width: 300px;
-    max-height: 300px;
-    text-align: center;
-    justify-content: center;
-    cursor: pointer;
-}
 
-img.bala {
-    width: 80px;
-    border: 3px solid black;
-    cursor: default;
-}
-
-img#shotgun {
-    max-height: 750px;
-}
-
-#fechado {
-    cursor: default;
-}
-
-/* ====== Componentes e Barras ====== */
-#descricao-item {
+#descricao-item{
     position: absolute;
     display: none;
     background: rgba(0, 0, 0, 0.75);
@@ -42,13 +18,6 @@ img#shotgun {
     border-radius: 5px;
 }
 
-#barra-vida {
-    background-color: black;
-    height: 20px;
-    width: 200px;
-}
-
-/* ====== Estrutura da Página ====== */
 header {
     position: absolute;
     top: 0;
@@ -57,34 +26,26 @@ header {
     justify-content: flex-end;
 }
 
-main {
+#barra-vida{
+    background-color: black;
+    height: 20px;
+    width: 200px;
+}
+
+main{
     display: flex;
     justify-content: start;
     align-items: center;
     height: 100%;
 }
 
-#mesa {
+#mesa{
     height: 95vh;
     width: 99%;
     display: flex;
 }
 
-/* ====== Estruturas de Layout ====== */
-.parte-cima, .parte-baixo {
-    width: 100%;
-    display: flex;
-    height: 100%;
-}
-
-#parte-direita, #parte-esquerda {
-    display: grid;
-    height: 100%;
-    width: 50%;
-}
-
-/* ====== Componentes Específicos ====== */
-.div {
+.div{
     width: 100%;
     height: 100%;
     border: 3px solid black;
@@ -94,8 +55,38 @@ main {
     align-items: center;
 }
 
-#cartucho {
+.parte-cima, .parte-baixo{
+    width: 100%;
+    display: flex;
+    height: 100%;
+}
+
+#shotgun{
+    max-height: 750px;
+}
+
+.bala{
+    width: 80px;
+    border: 3px solid black;
+    cursor: default;
+    padding: 0px;
+}
+
+#cartucho{
     display: inline-grid;
     justify-content: center;
     border: 5px solid black;
+    margin: 10px;
+}
+
+img{
+    max-width: 250px;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#fechado{
+    cursor: default;
 }

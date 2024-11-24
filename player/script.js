@@ -179,6 +179,7 @@ document.getElementById("criar-itens").onclick = () => {
             for (let coluna = 0; coluna < 2; coluna++) {
                 const item_aleatorio = itens[Math.floor(Math.random() * itens.length)];
                 mesa[lado][linha][coluna].push(item_aleatorio);
+                img_itens[cont].innerHTML = ''
                 img_itens[cont].src = item_aleatorio.src;
                 img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
                 ((img, item) => {
