@@ -32,49 +32,47 @@ document.getElementById("criar-sala").onclick = () => {
 
 // --- Configurações do jogo ---
 
-// Variaveis do site
+// Variáveis do site
 const shotgun = document.getElementById("shotgun");
 const cartuchoSite = document.querySelector("#cartucho");
 const player = document.getElementById("player");
 const barraVida = document.getElementById("barra-vida");
-const caixa = document.getElementById('caixa')
+const caixa = document.getElementById("caixa");
 const img_itens = document.querySelectorAll(".item");
 const descricaoDiv = document.getElementById("descricao-item");
 
-// Variaveis do jogo
+// Variáveis do jogo
 let cartucho_atual = [];
 let num_vazio = 0;
 let numBalaVerdade = 0;
 let numBalaFalsa = 0;
-let rodada = 0
-let vida = 3
-let itensAtualizados = 0
+let rodada = 1;
+let vida = 3;
+let itensAtualizados = 0;
 let maxVida = 4;
-let maxAtualizacoes = 3
-let maxRodadas = 3
-let itensPegos = false
+let maxAtualizacoes = 3;
+let maxRodadas = 3;
+let itensPegos = false;
 
 const assets = {
-    imagens : {
-        shotgun : "../img/shotgun.png",
-        shotgun_atirando : "../img/shotgun_atirando.png",
+    imagens: {
+        shotgun: "../img/shotgun.png",
+        shotgun_atirando: "../img/shotgun_atirando.png",
         caixa_aberta: "../img/caixa-aberta.png",
         caixa_fechada: "../img/caixa-fechada.png",
-        item_nada : "img/nada.png"
+        item_nada: "img/nada.png",
     },
-
-    audios : {
+    audios: {
         tiro: "../sounds/tiro.mp3",
         tirofake: "../sounds/tiro-fake.mp3",
-        recarregar: "../sounds/recarregando.mp3"
-    }, 
-    
-    img_html : {
-        cartucho_verdadeiro : '<img src="../img/cartucho-verdadeiro.png" alt="Bala Verdadeira" class="bala">',
-        cartucho_falso : '<img src="../img/cartucho-falso.png" alt="Bala Falsa" class="bala">',
-        cartucho_nada : '<img src="../img/cartucho-nada.png" alt="Nada" class="bala">'
-    }
-}
+        recarregar: "../sounds/recarregando.mp3",
+    },
+    img_html: {
+        cartucho_verdadeiro: '<img src="../img/cartucho-verdadeiro.png" alt="Bala Verdadeira" class="bala">',
+        cartucho_falso: '<img src="../img/cartucho-falso.png" alt="Bala Falsa" class="bala">',
+        cartucho_nada: '<img src="../img/cartucho-nada.png" alt="Nada" class="bala">',
+    },
+};
 
 // Funções utilitárias
 function geradorNumeroBalas() {
@@ -164,7 +162,7 @@ document.getElementById("shotgun").onclick = () => {
 // Controle de vida
 for (let c = 0; c < vida; c++) {
     const iconeVida = document.createElement("i");
-    iconeVida.className = "bx bxs-bolt";
+    iconeVida.className = "bx bxs-bolt vida";
     iconeVida.style.color = "#ffffff";
     barraVida.appendChild(iconeVida);
 }
@@ -196,91 +194,77 @@ const mesa = [[[[], []], [[], []]], [[[], []], [[], []]]]
 
 // Criação de itens na mesa
 function criarItens() {
-
+    itensAtualizados = 0
     let cont = 0;
 
-    // ----- Código para Backup (se necessário) -----
-    // for (let lado = 0; lado < 1; lado++) {
-    //     for (let linha = 0; linha < 2; linha++) {
-    //         for (let coluna = 0; coluna < 2; coluna++) {
-                
-    //             if (img_itens[cont].src.endsWith(assets.imagens.item_nada)) {
-    //                 const item_aleatorio = itens[Math.floor(Math.random() * itens.length)];
-    //                 mesa[lado][linha][coluna].push(item_aleatorio);
-    //                 // img_itens[cont].innerHTML = ''
-    //                 img_itens[cont].src = item_aleatorio.src;
-    //                 img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
-    //                 ((img, item) => {
-    //                     img.addEventListener("mouseover", (event) => {
-    //                         descricaoDiv.style.display = "block";
-    //                         descricaoDiv.style.left = event.pageX + "px";
-    //                         descricaoDiv.style.top = event.pageY + "px";
-    //                         descricaoDiv.innerHTML = `<strong>${item.nome}</strong><br>${item.descricao}`;
-    //                     });
-    //                     img.addEventListener("mouseout", () => {
-    //                         descricaoDiv.style.display = "none";
-    //                     });
-    //                 })(img_itens[cont], item_aleatorio);
-    //             } else {
-    //                 console.log("Nah, I'd win")
-    //             }
-    //             cont++;
-                
-    //         }
-    //     }
-    // }
-    // console.log(mesa);
-
-    
-    // Código acima, porém refatorado:
-
-    if (!itensPegos) {
-        itensAtualizados = 0
-        while (cont < 8 && itensAtualizados < maxAtualizacoes){
-            if (img_itens[cont].src.endsWith(assets.imagens.item_nada)) {
-                const item_aleatorio = itens[Math.floor(Math.random() * itens.length)]
-    
-                // Atualiza a matriz com o novo item
-                const lado = Math.floor(cont / 4); // Índice para o "lado" (0 ou 1)
-                const linha = Math.floor((cont % 4) / 2); // Índice para "linha" (0 ou 1)
-                const coluna = cont % 2; // Índice para "coluna" (0 ou 1)
-                mesa[lado][linha][coluna].push(item_aleatorio);
-    
-                img_itens[cont].src = item_aleatorio.src;
-                img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
-                
-                // Vincula os eventos
-                img_itens[cont].addEventListener("mouseover", (event) => {
-                    descricaoDiv.style.display = "block";
-                    descricaoDiv.style.left = event.pageX - 10 + "px";
-                    descricaoDiv.style.top = event.pageY + 10 + "px"; // Desloca a div para baixo
-                    descricaoDiv.innerHTML = `<strong>${item_aleatorio.nome}</strong><br>${item_aleatorio.descricao}`;
-                });
-                img_itens[cont].addEventListener("mouseout", () => {
-                    descricaoDiv.style.display = "none";
-                });
-                img_itens[cont].addEventListener("click", () => {
-                    // Troca a imagem para "nada"
-                    img_itens[cont].src = "../" + assets.imagens.item_nada;
-
-                    // Desvincula os eventos de descrição
-                    img.removeEventListener("mouseover", onMouseOver);
-                    img.removeEventListener("mouseout", onMouseOut);
-
-                    // Atualiza o contador de itens atualizados
-                    if (itensAtualizados > 0) {
-                        itensAtualizados--;
-                    }
-                });
-                
-                itensAtualizados++
+    while (cont < 8 && itensAtualizados < maxAtualizacoes) {
+        console.log(`Item ${cont} antes da atualização:`, img_itens[cont].src);
+        
+        if (img_itens[cont].src.endsWith(assets.imagens.item_nada)) {
+            const item_aleatorio = itens[Math.floor(Math.random() * itens.length)];
+            
+            // Atualiza a matriz com o novo item
+            const lado = Math.floor(cont / 4); // Índice para o "lado" (0 ou 1)
+            const linha = Math.floor((cont % 4) / 2); // Índice para "linha" (0 ou 1)
+            const coluna = cont % 2; // Índice para "coluna" (0 ou 1)
+            
+            if (!Array.isArray(mesa[lado][linha][coluna])) {
+                mesa[lado][linha][coluna] = [];
             }
-            cont++
+            mesa[lado][linha][coluna].push(item_aleatorio);
+            
+            // Atualiza os atributos da imagem
+            img_itens[cont].src = item_aleatorio.src;
+            img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
+            
+            // Eventos para a imagem
+            const onMouseOver = (event) => {
+                descricaoDiv.style.display = "block";
+                descricaoDiv.style.left = event.pageX - 10 + "px";
+                descricaoDiv.style.top = event.pageY + 10 + "px"; // Desloca a div para baixo
+                descricaoDiv.innerHTML = `<strong>${item_aleatorio.nome}</strong><br>${item_aleatorio.descricao}`;
+            };
+            
+            const onMouseOut = () => {
+                descricaoDiv.style.display = "none";
+            };
+            
+            const onClick = (event) => {
+                const img = event.target; // Elemento que disparou o evento
+                
+                // Troca a imagem para "nada"
+                img.src = "../" + assets.imagens.item_nada;
+                img.alt = "Nada";
+                
+                // Oculta a descrição e limpa o conteúdo
+                descricaoDiv.style.display = "none";
+                descricaoDiv.innerHTML = "";
+                
+                // Desvincula os eventos de descrição
+                img.removeEventListener("mouseover", onMouseOver);
+                img.removeEventListener("mouseout", onMouseOut);
+                
+                // Atualiza o contador de itens atualizados
+                if (itensAtualizados > 0) {
+                    itensAtualizados--;
+                }
+            };
+            
+            
+            // Vincula os eventos
+            img_itens[cont].addEventListener("mouseover", onMouseOver);
+            img_itens[cont].addEventListener("mouseout", onMouseOut);
+            img_itens[cont].addEventListener("click", onClick);
+            
+            console.log(`Atualizando com o item:`, item_aleatorio);
+            itensAtualizados++;
         }
+        cont++;
     }
     itensPegos = true
-
+    console.log(mesa)       
 }
+
 
 // Movimentação da descrição
 document.addEventListener("mousemove", (event) => {
@@ -291,15 +275,39 @@ document.addEventListener("mousemove", (event) => {
     }
 });
 
-// Criação de uma rodada nova
+// Controle de rodadas
 document.getElementById('nova-rodada').onclick = () => {
-    if (maxRodadas > rodada && cartucho_atual.length == 0) {
-        rodada++
-        criarCartuchoGeral()
-        caixa.src = assets.imagens.caixa_aberta
-        caixa.addEventListener('click', () => {
-            criarItens()
-            caixa.src = assets.imagens.caixa_fechada
-        })
+    // Verifica se o número máximo de rodadas foi alcançado
+    if (rodada <= maxRodadas) {
+        if (cartucho_atual.length === 0) {
+            console.log(`Iniciando a rodada ${rodada}`);
+            
+            // Criação de novo cartucho
+            criarCartuchoGeral();
+
+            // Atualiza o estado da caixa para aberta e habilita o evento de clique
+            caixa.src = assets.imagens.caixa_aberta;
+            itensPegos = false;
+
+            caixa.onclick = () => {
+                if (!itensPegos) {
+                    criarItens(); // Cria 3 itens
+                    caixa.src = assets.imagens.caixa_fechada; // Fecha a caixa
+                    itensPegos = true; // Impede a criação duplicada
+                    console.log(`Itens criados na rodada ${rodada}`);
+                } else {
+                    console.log("Os itens já foram criados nesta rodada.");
+                }
+            };
+
+            // Incrementa a rodada
+            rodada++;
+        } else {
+            console.log("O cartucho ainda não foi utilizado por completo.");
+        }
+    } else {
+        // Fim do jogo
+        console.log("O jogo acabou! Obrigado por jogar!");
+        window.alert("O jogo acabou! Obrigado por jogar!");
     }
-}
+};

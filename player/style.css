@@ -28,8 +28,14 @@ header {
 
 #barra-vida{
     background-color: black;
-    height: 20px;
-    width: 200px;
+    height: 35px;
+    width: 130px;
+    position: absolute;
+    bottom: 0px;
+}
+
+.vida{
+    font-size: 2em;
 }
 
 main{
@@ -89,4 +95,9 @@ img{
 
 #fechado{
     cursor: default;
+}
+
+footer{
+    display: grid;
+    justify-items: center;
 }
