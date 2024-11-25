@@ -93,11 +93,19 @@ img{
     cursor: pointer;
 }
 
-#fechado{
-    cursor: default;
+.fechado{
+    cursor: not-allowed;
 }
 
 footer{
     display: grid;
     justify-items: center;
+}
+
+.nada{
+    cursor: default;
+}
+
+.aberto {
+    cursor: pointer;
 }

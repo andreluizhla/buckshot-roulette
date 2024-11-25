@@ -53,6 +53,7 @@ let maxVida = 4;
 let maxAtualizacoes = 3;
 let maxRodadas = 3;
 let itensPegos = false;
+let vivo = true
 
 const assets = {
     imagens: {
@@ -169,24 +170,62 @@ for (let c = 0; c < vida; c++) {
 
 // Itens e classe Item
 class Item {
-    constructor(nome, src, descricao) {
+    constructor(nome, nomealt, src, descricao) {
         this.nome = nome;
+        this.nomealt = nomealt;
         this.src = src;
         this.descricao = descricao;
     }
 }
 
 const itens = [
-    new Item("Vacina do SUS", "../img/vacina.png", "Esse item faz com que você pegue emprestado (você rouba) um item do seu amiguinho e usa imediatamente"),
-    new Item('Nokia (Celular do André)', '../img/nokia.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação. Deve ser Telemarketing de São Paulo.'),
-    new Item('Cerra do Tio', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno. Não pe pergunte como conseguiram essa cerra.'),
-    new Item('Cingarro do seu Pai', '../img/cingarro.png', 'Ganha +1 de vida. E sim... aqui, fumar faz bem para a saúde'),
-    new Item('Heineken Batizada', '../img/heineken.png', 'Descarta a bala atual. Te transforma em um cachaceiro do carai (fal o L).'),
-    new Item('Lupa do Tio Sherlock', '../img/lupa.png', 'Veja qual é a bala atual. Antigamente era usado para ver cu de curioso'),
-    new Item('Paracetamol Vencido', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida.'),
-    new Item('Carta Reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda. Não acontece nada quando tem apenas 2 jogadores.'),
-    new Item('Carta Bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer (Exceto você mesmo). É uma pena que você não consegue se bloquear.')
+    new Item("Vacina do SUS", 'vacina', "../img/vacina.png", "Esse item faz com que você pegue emprestado (você rouba) um item do seu amiguinho e usa imediatamente"),
+    new Item('Nokia (Celular do André)', 'nokia', '../img/nokia.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação. Deve ser Telemarketing de São Paulo.'),
+    new Item('Cerra do Tio', 'cerra', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno. Não pe pergunte como conseguiram essa cerra.'),
+    new Item('Cingarro Brochante', 'cingarro', '../img/cingarro.png', 'Ganha +1 de vida. E sim... aqui, fumar faz bem para a saúde'),
+    new Item('Heineken Batizada', 'heineken', '../img/heineken.png', 'Descarta a bala atual. Te transforma em um cachaceiro do carai (fal o L).'),
+    new Item('Lupa do Tio Sherlock', 'lupa', '../img/lupa.png', 'Veja qual é a bala atual. Antigamente era usado para ver cu de curioso'),
+    new Item('Paracetamol Vencido', 'paracetamol', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida.'),
+    new Item('Carta Reverso', 'reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda. Não acontece nada quando tem apenas 2 jogadores.'),
+    new Item('Carta Bloqueio', 'bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer (Exceto você mesmo). É uma pena que você não consegue se bloquear.')
 ]
+
+// Funções dos itens
+function acaoVacina() {
+    
+}
+
+function acaoNokia() {
+    
+}
+
+function acaoCerra() {
+    
+}
+
+function acaoCingarro() {
+    
+}
+
+function acaoHeineken() {
+    
+}
+
+function acaoLupa() {
+    
+}
+
+function acaoParacetamol() {
+    
+}
+
+function acaoReverso() {
+    
+}
+
+function acaoBloqueio() {
+    
+}
 
 // Lista da mesa
 // Mapa da mesa: [ mesa [ lado [ linha [ coluna ] ] ]]
@@ -198,7 +237,6 @@ function criarItens() {
     let cont = 0;
 
     while (cont < 8 && itensAtualizados < maxAtualizacoes) {
-        console.log(`Item ${cont} antes da atualização:`, img_itens[cont].src);
         
         if (img_itens[cont].src.endsWith(assets.imagens.item_nada)) {
             const item_aleatorio = itens[Math.floor(Math.random() * itens.length)];
@@ -216,6 +254,7 @@ function criarItens() {
             // Atualiza os atributos da imagem
             img_itens[cont].src = item_aleatorio.src;
             img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
+            img_itens[cont].setAttribute('data-item', `${item_aleatorio.nomealt}`)
             
             // Eventos para a imagem
             const onMouseOver = (event) => {
@@ -232,9 +271,63 @@ function criarItens() {
             const onClick = (event) => {
                 const img = event.target; // Elemento que disparou o evento
                 
+                switch (event.target.dataset.item) {
+                    case "vacina":
+                        console.log('Vacina Clicada!')
+                        acaoVacina()
+                        break;
+                    
+                    case "nokia":
+                        console.log('Nokia Clicada!')
+                        acaoNokia()
+                        break;
+                
+                    case "cerra":
+                        console.log('Cerra Clicada!')
+                        acaoCerra()
+                        break;
+
+                    case "cingarro":
+                        console.log('Cingarro Clicada!')
+                        acaoCingarro()
+                        break;
+
+                    case "heineken":
+                        console.log('Heineken Clicada!')
+                        acaoHeineken()
+                        break;
+                        
+                    case "lupa":
+                        console.log('Lupa Clicada!')
+                        acaoLupa()
+                        break;
+
+                    case "paracetamol":
+                        console.log('Paracetamol Clicada!')
+                        acaoParacetamol()
+                        break;
+
+                    case "reverso":
+                        console.log('Reverso Clicada!')
+                        acaoReverso()
+                        break;
+                        
+                    case "bloqueio":
+                        console.log('Bloqueio Clicada!')
+                        acaoBloqueio()
+                        break;
+
+                    default:
+                        console.error('[ERRO]: Item não identificado!')
+                        break;
+                }
+                
+                img.setAttribute('data-item', ``)
+                
                 // Troca a imagem para "nada"
                 img.src = "../" + assets.imagens.item_nada;
                 img.alt = "Nada";
+                img.classList.toggle('nada')
                 
                 // Oculta a descrição e limpa o conteúdo
                 descricaoDiv.style.display = "none";
@@ -248,6 +341,7 @@ function criarItens() {
                 if (itensAtualizados > 0) {
                     itensAtualizados--;
                 }
+
             };
             
             
@@ -255,14 +349,15 @@ function criarItens() {
             img_itens[cont].addEventListener("mouseover", onMouseOver);
             img_itens[cont].addEventListener("mouseout", onMouseOut);
             img_itens[cont].addEventListener("click", onClick);
+            img_itens[cont].classList.toggle('nada')
+
             
-            console.log(`Atualizando com o item:`, item_aleatorio);
             itensAtualizados++;
         }
         cont++;
     }
     itensPegos = true
-    console.log(mesa)       
+    // console.log(mesa)       
 }
 
 
@@ -287,12 +382,19 @@ document.getElementById('nova-rodada').onclick = () => {
 
             // Atualiza o estado da caixa para aberta e habilita o evento de clique
             caixa.src = assets.imagens.caixa_aberta;
+            caixa.classList.toggle('fechado')
+            caixa.classList.toggle('aberto')
+            caixa.alt = 'Caixa Aberta'
             itensPegos = false;
-
+            
+            
             caixa.onclick = () => {
                 if (!itensPegos) {
                     criarItens(); // Cria 3 itens
                     caixa.src = assets.imagens.caixa_fechada; // Fecha a caixa
+                    caixa.classList.toggle('aberto')
+                    caixa.classList.toggle('fechado')
+                    caixa.alt = 'Caixa Fechada'
                     itensPegos = true; // Impede a criação duplicada
                     console.log(`Itens criados na rodada ${rodada}`);
                 } else {
