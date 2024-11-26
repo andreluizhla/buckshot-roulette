@@ -50,15 +50,20 @@ let rodada = 1;
 let vida = 3;
 let itensAtualizados = 0;
 let maxVida = 4;
-let maxAtualizacoes = 3;
+let maxAtualizacoes = 8;
 let maxRodadas = 3;
 let itensPegos = false;
 let vivo = true
+let dano = 1
+let ordem = 1 // 1 para ordem horária e -1 para ordem anti-horária
+
 
 const assets = {
     imagens: {
         shotgun: "../img/shotgun.png",
         shotgun_atirando: "../img/shotgun_atirando.png",
+        shotgun_dobro : "../img/shotgun-dobro.png",
+        shotgun_dobro_atirando : "../img/shotgun-dobro-atirando.png",
         caixa_aberta: "../img/caixa-aberta.png",
         caixa_fechada: "../img/caixa-fechada.png",
         item_nada: "img/nada.png",
@@ -153,19 +158,37 @@ document.getElementById("shotgun").onclick = () => {
     if (cartucho_atual.length > 0) {
         const bala = cartucho_atual.shift();
         som(bala ? "tiro" : "tirofake");
-        shotgun.src = bala ? assets.imagens.shotgun_atirando : assets.imagens.shotgun;
+        if (dano == 1) {
+            shotgun.src = bala ? assets.imagens.shotgun_atirando : assets.imagens.shotgun;
+        } else {
+            shotgun.src = bala ? assets.imagens.shotgun_dobro_atirando : assets.imagens.shotgun;
+            dano /= 2
+        }
         atualizaCartuchoSite();
     } else {
         shotgun.src = assets.imagens.shotgun;
+        window.alert('Acabou as balas')
     }
 };
 
 // Controle de vida
-for (let c = 0; c < vida; c++) {
-    const iconeVida = document.createElement("i");
-    iconeVida.className = "bx bxs-bolt vida";
-    iconeVida.style.color = "#ffffff";
-    barraVida.appendChild(iconeVida);
+function atualizaVida() {
+    barraVida.innerHTML = ''
+    if (vida <= 0){
+        vivo = false
+        vida = 0
+        window.alert('Parabéns, você morreu!')
+    } else if (vida > maxVida){
+        vida = maxVida
+        window.alert('Máximo de vida atingido!')
+    }
+    for (let c = 0; c < vida; c++) {
+        const iconeVida = document.createElement("i");
+        iconeVida.className = "bx bxs-bolt vida";
+        iconeVida.style.color = "#ffffff";
+        barraVida.appendChild(iconeVida);
+    }
+    console.log(vida)
 }
 
 // Itens e classe Item
@@ -196,27 +219,61 @@ function acaoVacina() {
 }
 
 function acaoNokia() {
-    
+    if (cartucho_atual.length > 0) {
+        let posicaoBala
+        do {
+            posicaoBala = Math.floor(Math.random() * cartucho_atual.length)
+        } while (posicaoBala == 0)
+        window.alert(`A ${ posicaoBala + 1 } bala é ${cartucho_atual[posicaoBala] == true ? "Verdadeira" : "Falsa"}`)
+    } else {
+        window.alert('Não tem o que falar')
+    }
 }
 
+
 function acaoCerra() {
-    
+    if (dano == 1) {
+        dano *= 2
+        shotgun.src = assets.imagens.shotgun_dobro
+    } else {
+        window.alert('Você é um safado mesmo kkkkkkk, tentando duplicar o dano dobrado')
+    }
 }
 
 function acaoCingarro() {
-    
+    vida++
+    atualizaVida()
 }
 
 function acaoHeineken() {
-    
+    cartucho_atual.shift()
+    som('tirofake')
+    atualizaCartuchoSite()
 }
 
 function acaoLupa() {
-    
+    if (cartucho_atual.length > 0) {
+        window.alert(`A próxima bala é ${cartucho_atual[0] == true ? "Verdadeira" : "Falsa"}`)
+    } else {
+        window.alert('Não tem o que ver')
+    }
 }
 
 function acaoParacetamol() {
-    
+    if (Math.random() > 0.5) {
+        vida-- 
+        console.log('Perdeu -1 de vida')
+    } else {
+        if ((vida + 2) >= maxVida){
+            vida = maxVida
+            console.log('Vida máxima atingida')
+        } else {
+            vida += 2
+            console.log('Ganhou +2 de vida')
+        }
+    } 
+    console.log(vida)
+    atualizaVida()
 }
 
 function acaoReverso() {
@@ -372,6 +429,10 @@ document.addEventListener("mousemove", (event) => {
 
 // Controle de rodadas
 document.getElementById('nova-rodada').onclick = () => {
+    novaRodada()
+};
+
+function novaRodada() {
     // Verifica se o número máximo de rodadas foi alcançado
     if (rodada <= maxRodadas) {
         if (cartucho_atual.length === 0) {
@@ -412,4 +473,9 @@ document.getElementById('nova-rodada').onclick = () => {
         console.log("O jogo acabou! Obrigado por jogar!");
         window.alert("O jogo acabou! Obrigado por jogar!");
     }
-};
+}
+
+document.body.onload = () => {
+    atualizaVida()
+    novaRodada()
+}
