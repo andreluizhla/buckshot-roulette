@@ -1,0 +1,7 @@
+Ordem de prioridade: mais importante primeiro
+
+1. Definir e sincronizar banco de dados
+2. definir para quem vai os tiros
+3. saber os itens dos amigos
+4. arrumar css
+5. Curtir a vida jogando o jogo pronto *joinha*
