@@ -3,6 +3,22 @@ import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/fire
 
 // --- Configurações do jogo ---
 
+// Caso necessário:
+function reset() {
+    var cartucho_atual = [];
+    var num_vazio = 0;
+    var numBalaVerdade = 0;
+    var numBalaFalsa = 0;
+    var rodada = 1;
+    var vida = 3;
+    var itensAtualizados = 0;
+    var itensPegos = false;
+    var vivo = true
+    var dano = 1
+    var ordem = 1
+}
+
+
 // Variáveis do site
 const shotgun = document.getElementById("shotgun");
 const cartuchoSite = document.querySelector("#cartucho");
@@ -95,7 +111,7 @@ console.log(jogador)
 
 const app = window.firebaseApp;
 const database = window.firebaseDatabase;
-let idSalaLocal = localStorage.getItem("")
+let idSalaLocal = localStorage.getItem("idSalaLocal")
 
 // Verificadores de banco de dados
 if (!app) console.error("Erro ao importar o APP");
@@ -103,44 +119,44 @@ if (!database) console.error("Firebase Database não foi inicializado.");
 
 
 // Criação de uma sala
-document.getElementById("criar-sala").onclick = () => {
-    if (!database) {
-        console.error("Firebase Database não foi inicializado.");
-        return;
-    }
+// {
+//     if (!database) {
+//         console.error("Firebase Database não foi inicializado.");
+//         return;
+//     }
 
-    const salaId = Math.random().toString(36).substr(2, 9);
-    const salaRef = ref(database, `salas/${salaId}`);
+//     const salaId = Math.random().toString(36).substr(2, 9);
+//     const salaRef = ref(database, `salas/${salaId}`);
 
-    localStorage.setItem(idSalaLocal, salaId)
-    localStorage.setItem(refSalaLocal, salaRef)
+//     localStorage.setItem(idSalaLocal, salaId)
+//     localStorage.setItem(refSalaLocal, salaRef)
 
-    set(salaRef, {
-        status: "aguardando",
-        jogadores: {},
-        rodada: 1,
-        cartucho: [],
-        ordem: 1
-    })
-        .then(() => {
-            console.log("Sala criada com sucesso!", salaId);
-            window.alert(`Sala criada! Código: ${salaId}`);
-        })
-        .catch((error) => {
-            console.error("Erro ao criar sala:", error);
-        });
+//     set(salaRef, {
+//         status: "aguardando",
+//         jogadores: {},
+//         rodada: 1,
+//         cartucho: [],
+//         ordem: 1
+//     })
+//         .then(() => {
+//             console.log("Sala criada com sucesso!", salaId);
+//             window.alert(`Sala criada! Código: ${salaId}`);
+//         })
+//         .catch((error) => {
+//             console.error("Erro ao criar sala:", error);
+//         });
     
-};
+// };
 
 // Entrada de jogadores
-document.getElementById('entrar').onclick = () => {
-    console.log(jogador)
-    jogador.nickname = window.prompt('nickname do jogador')
-    const salaId = window.prompt('Código da sala')
-    console.log(jogador.nickname)
-    console.log(salaId)
-    adicionarJogador(localStorage.getItem(idSalaLocal), jogador)
-}
+// document.getElementById('entrar').onclick = () => {
+//     console.log(jogador)
+//     jogador.nickname = window.prompt('nickname do jogador')
+//     const salaId = window.prompt('Código da sala')
+//     console.log(jogador.nickname)
+//     console.log(salaId)
+//     
+// }
 
 function adicionarJogador(salaId, jogador) {
     const jogadorRef = ref(database, `salas/${salaId}/jogadores/${jogador.nickname}`);
@@ -153,20 +169,6 @@ function atualizarMesa(){
 
 }
 
-
-function reset() {
-    var cartucho_atual = [];
-    var num_vazio = 0;
-    var numBalaVerdade = 0;
-    var numBalaFalsa = 0;
-    var rodada = 1;
-    var vida = 3;
-    var itensAtualizados = 0;
-    var itensPegos = false;
-    var vivo = true
-    var dano = 1
-    var ordem = 1
-}
 
 
 
@@ -246,15 +248,23 @@ function criarCartuchoGeral() {
 
 document.getElementById("shotgun").onclick = () => {
     if (cartucho_atual.length > 0) {
-        const bala = cartucho_atual.shift();
-        som(bala ? "tiro" : "tirofake");
-        if (dano == 1) {
-            shotgun.src = bala ? assets.imagens.shotgun_atirando : assets.imagens.shotgun;
+        if (itensPegos) {
+            const bala = cartucho_atual.shift();
+            som(bala ? "tiro" : "tirofake");
+            if (dano == 1) {
+                shotgun.src = bala ? assets.imagens.shotgun_atirando : assets.imagens.shotgun;
+            } else {
+                shotgun.src = bala ? assets.imagens.shotgun_dobro_atirando : assets.imagens.shotgun;
+                dano /= 2
+            }
+            atualizaCartuchoSite();
+            setTimeout(() => {if (cartucho_atual.length == 0) {
+                novaRodada()
+            }
+        }, 2000)  
         } else {
-            shotgun.src = bala ? assets.imagens.shotgun_dobro_atirando : assets.imagens.shotgun;
-            dano /= 2
+            window.alert('Calma calabreso kkkkk, pegue os itens da caixa antes')
         }
-        atualizaCartuchoSite();
     } else {
         shotgun.src = assets.imagens.shotgun;
         window.alert('Acabou as balas')
@@ -491,11 +501,6 @@ document.addEventListener("mousemove", (event) => {
     }
 });
 
-// Controle de rodadas
-document.getElementById('nova-rodada').onclick = () => {
-    novaRodada()
-};
-
 function novaRodada() {
     // Verifica se o número máximo de rodadas foi alcançado
     if (rodada <= maxRodadas) {
@@ -542,4 +547,5 @@ function novaRodada() {
 document.body.onload = () => {
     atualizaVida()
     novaRodada()
+    adicionarJogador(localStorage.getItem(idSalaLocal), jogador)
 }
