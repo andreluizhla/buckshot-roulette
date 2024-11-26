@@ -350,7 +350,6 @@ function acaoParacetamol() {
             console.log('Ganhou +2 de vida')
         }
     }
-    console.log(vida)
     atualizaVida()
 }
 
@@ -404,52 +403,42 @@ function criarItens() {
 
                 switch (event.target.dataset.item) {
                     case "vacina":
-                        console.log('Vacina Clicada!')
                         acaoVacina()
                         break;
 
                     case "nokia":
-                        console.log('Nokia Clicada!')
                         acaoNokia()
                         break;
 
                     case "cerra":
-                        console.log('Cerra Clicada!')
                         acaoCerra()
                         break;
 
                     case "cingarro":
-                        console.log('Cingarro Clicada!')
                         acaoCingarro()
                         break;
 
                     case "heineken":
-                        console.log('Heineken Clicada!')
                         acaoHeineken()
                         break;
 
                     case "lupa":
-                        console.log('Lupa Clicada!')
                         acaoLupa()
                         break;
 
                     case "paracetamol":
-                        console.log('Paracetamol Clicada!')
                         acaoParacetamol()
                         break;
 
                     case "reverso":
-                        console.log('Reverso Clicada!')
                         acaoReverso()
                         break;
 
                     case "bloqueio":
-                        console.log('Bloqueio Clicada!')
                         acaoBloqueio()
                         break;
 
                     default:
-                        console.error('[ERRO]: Item não identificado!')
                         break;
                 }
 
