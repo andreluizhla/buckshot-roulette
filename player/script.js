@@ -173,7 +173,7 @@ function reset() {
 // Funções utilitárias
 function geradorNumeroBalas() {
     while (true) {
-        let variavel = Math.floor(Math.random() * 10);
+        let variavel = Math.ceil(Math.random() * 10);
         if (10 > variavel + num_vazio) return variavel;
     }
 }
