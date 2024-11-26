@@ -109,3 +109,13 @@ footer{
 .aberto {
     cursor: pointer;
 }
+
+#formulario {
+    position: absolute;
+    display: none;
+}
+
+#direcao-tiro {
+    position: absolute;
+    display: none;
+}

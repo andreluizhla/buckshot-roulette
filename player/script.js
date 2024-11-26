@@ -1,59 +1,6 @@
 // Importação e configuração do Firebase Database
 import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-const app = window.firebaseApp;
-const database = window.firebaseDatabase;
-
-if (!app) console.error("Erro ao importar o APP");
-if (!database) console.error("Firebase Database não foi inicializado.");
-
-// Criação de uma sala
-document.getElementById("criar-sala").onclick = () => {
-    if (!database) {
-        console.error("Firebase Database não foi inicializado.");
-        return;
-    }
-
-    const salaId = Math.random().toString(36).substr(2, 9);
-    const salaRef = ref(database, `salas/${salaId}`);
-
-    set(salaRef, {
-        status: "aguardando",
-        jogadores: {},
-        rodada: 1,
-        cartucho: [],
-        ordem: 1
-    })
-        .then(() => {
-            console.log("Sala criada com sucesso!", salaId);
-            window.alert(`Sala criada! Código: ${salaId}`);
-        })
-        .catch((error) => {
-            console.error("Erro ao criar sala:", error);
-        });
-    
-};
-
-// Entrada de jogadores
-document.getElementById('entrar').onclick = () => {
-    console.log(jogador)
-    jogador.nome = window.prompt('Nome do jogador')
-    const salaId = window.prompt('Código da sala')
-    console.log(jogador.nome)
-    console.log(salaId)
-    adicionarJogador(salaId, jogador)
-}
-
-function adicionarJogador(salaId, jogador) {
-    const jogadorRef = ref(database, `salas/${salaId}/jogadores/${jogador.nome}`);
-    set(jogadorRef, { vida: jogador.vida, itens: jogador.itens || [] })
-        .then(() => console.log(`${jogador.nome} adicionado à sala ${salaId}`))
-        .catch((err) => console.error("Erro ao adicionar jogador:", err));
-}
-
-function atualizarMesa()
-
-
 // --- Configurações do jogo ---
 
 // Variáveis do site
@@ -62,7 +9,7 @@ const cartuchoSite = document.querySelector("#cartucho");
 const player = document.getElementById("player");
 const barraVida = document.getElementById("barra-vida");
 const caixa = document.getElementById("caixa");
-const img_itens = document.querySelectorAll(".item");
+const imgItens = document.querySelectorAll(".item");
 const descricaoDiv = document.getElementById("descricao-item");
 
 // Variáveis do jogo
@@ -99,19 +46,134 @@ const assets = {
         recarregar: "../sounds/recarregando.mp3",
     },
     img_html: {
-        cartucho_verdadeiro: '<img src="../img/cartucho-verdadeiro.png" alt="Bala Verdadeira" class="bala">',
-        cartucho_falso: '<img src="../img/cartucho-falso.png" alt="Bala Falsa" class="bala">',
-        cartucho_nada: '<img src="../img/cartucho-nada.png" alt="Nada" class="bala">',
+        bala_verdadeiro: '<img src="../img/bala-verdadeiro.png" alt="Bala Verdadeira" class="bala">',
+        bala_falso: '<img src="../img/bala-falso.png" alt="Bala Falsa" class="bala">',
+        bala_nada: '<img src="../img/bala-nada.png" alt="Nada" class="bala">',
     },
 };
 
+
+// Lista da mesa
+// Mapa da mesa: [ mesa [ lado [ linha [ coluna ] ] ]]
+const mesa = [[[[], []], [[], []]], [[[], []], [[], []]]]
+
+
+// Itens e classe Item
+class Item {
+    constructor(nome, nomealt, src, descricao) {
+        this.nome = nome;
+        this.nomealt = nomealt;
+        this.src = src;
+        this.descricao = descricao;
+    }
+}
+
+const itens = [
+    new Item("Vacina do SUS", 'vacina', "../img/vacina.png", "Esse item faz com que você pegue emprestado (você rouba) um item do seu amiguinho e usa imediatamente"),
+    new Item('Nokia (Celular do André)', 'nokia', '../img/nokia.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação. Deve ser Telemarketing de São Paulo.'),
+    new Item('Cerra do Tio', 'cerra', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno. Não pe pergunte como conseguiram essa cerra.'),
+    new Item('Cingarro Brochante', 'cingarro', '../img/cingarro.png', 'Ganha +1 de vida. E sim... aqui, fumar faz bem para a saúde'),
+    new Item('Heineken Batizada', 'heineken', '../img/heineken.png', 'Descarta a bala atual. Te transforma em um cachaceiro do carai (fal o L).'),
+    new Item('Lupa do Tio Sherlock', 'lupa', '../img/lupa.png', 'Veja qual é a bala atual. Antigamente era usado para ver cu de curioso'),
+    new Item('Paracetamol Vencido', 'paracetamol', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida.'),
+    new Item('Carta Reverso', 'reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda. Não acontece nada quando tem apenas 2 jogadores.'),
+    new Item('Carta Bloqueio', 'bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer (Exceto você mesmo). É uma pena que você não consegue se bloquear.')
+]
+
+
+// Variáveis do Jogador
+let jogador = {
+    nickname: localStorage.getItem('nickname'),
+    itens: mesa,
+    vida: vida,
+    vivo: vivo,
+    suaVez: false,
+    bloqueado: false
+}
+console.log(jogador)
+//Configurações do banco de dados
+
+const app = window.firebaseApp;
+const database = window.firebaseDatabase;
+let idSalaLocal = localStorage.getItem("")
+
+// Verificadores de banco de dados
+if (!app) console.error("Erro ao importar o APP");
+if (!database) console.error("Firebase Database não foi inicializado.");
+
+
+// Criação de uma sala
+document.getElementById("criar-sala").onclick = () => {
+    if (!database) {
+        console.error("Firebase Database não foi inicializado.");
+        return;
+    }
+
+    const salaId = Math.random().toString(36).substr(2, 9);
+    const salaRef = ref(database, `salas/${salaId}`);
+
+    localStorage.setItem(idSalaLocal, salaId)
+    localStorage.setItem(refSalaLocal, salaRef)
+
+    set(salaRef, {
+        status: "aguardando",
+        jogadores: {},
+        rodada: 1,
+        cartucho: [],
+        ordem: 1
+    })
+        .then(() => {
+            console.log("Sala criada com sucesso!", salaId);
+            window.alert(`Sala criada! Código: ${salaId}`);
+        })
+        .catch((error) => {
+            console.error("Erro ao criar sala:", error);
+        });
+    
+};
+
+// Entrada de jogadores
+document.getElementById('entrar').onclick = () => {
+    console.log(jogador)
+    jogador.nickname = window.prompt('nickname do jogador')
+    const salaId = window.prompt('Código da sala')
+    console.log(jogador.nickname)
+    console.log(salaId)
+    adicionarJogador(localStorage.getItem(idSalaLocal), jogador)
+}
+
+function adicionarJogador(salaId, jogador) {
+    const jogadorRef = ref(database, `salas/${salaId}/jogadores/${jogador.nickname}`);
+    set(jogadorRef, { vida: jogador.vida, itens: jogador.itens || [] })
+        .then(() => console.log(`${jogador.nickname} adicionado à sala ${salaId}`))
+        .catch((err) => console.error("Erro ao adicionar jogador:", err));
+}
+
+function atualizarMesa(){
+
+}
+
+
+function reset() {
+    var cartucho_atual = [];
+    var num_vazio = 0;
+    var numBalaVerdade = 0;
+    var numBalaFalsa = 0;
+    var rodada = 1;
+    var vida = 3;
+    var itensAtualizados = 0;
+    var itensPegos = false;
+    var vivo = true
+    var dano = 1
+    var ordem = 1
+}
 
 
 
 // Funções utilitárias
 function geradorNumeroBalas() {
     while (true) {
-        let variavel = Math.ceil(Math.random() * 10);
+        let variavel = Math.floor(Math.random() * 10);
         if (10 > variavel + num_vazio) return variavel;
     }
 }
@@ -153,13 +215,13 @@ function atualizaCartuchoSite() {
     let c = 0
     cartucho_atual.forEach((bala) => {
         cartuchoSite.innerHTML += bala
-            ? assets.img_html.cartucho_verdadeiro
-            : assets.img_html.cartucho_falso;
+            ? assets.img_html.bala_verdadeiro
+            : assets.img_html.bala_falso;
         c++
     });
     if (c < 10)
         for (c; c < 10; c++)
-            cartuchoSite.innerHTML += assets.img_html.cartucho_nada
+            cartuchoSite.innerHTML += assets.img_html.bala_nada
 }
 
 function som(tipoSom) {
@@ -218,28 +280,6 @@ function atualizaVida() {
     }
     console.log(vida)
 }
-
-// Itens e classe Item
-class Item {
-    constructor(nome, nomealt, src, descricao) {
-        this.nome = nome;
-        this.nomealt = nomealt;
-        this.src = src;
-        this.descricao = descricao;
-    }
-}
-
-const itens = [
-    new Item("Vacina do SUS", 'vacina', "../img/vacina.png", "Esse item faz com que você pegue emprestado (você rouba) um item do seu amiguinho e usa imediatamente"),
-    new Item('Nokia (Celular do André)', 'nokia', '../img/nokia.png', 'Uma voz misteriosa te conta sobre a posição e tipo da bala a partir desta ligação. Deve ser Telemarketing de São Paulo.'),
-    new Item('Cerra do Tio', 'cerra', '../img/cerra.png', 'Dobra o dano da shotgun nesse turno. Não pe pergunte como conseguiram essa cerra.'),
-    new Item('Cingarro Brochante', 'cingarro', '../img/cingarro.png', 'Ganha +1 de vida. E sim... aqui, fumar faz bem para a saúde'),
-    new Item('Heineken Batizada', 'heineken', '../img/heineken.png', 'Descarta a bala atual. Te transforma em um cachaceiro do carai (fal o L).'),
-    new Item('Lupa do Tio Sherlock', 'lupa', '../img/lupa.png', 'Veja qual é a bala atual. Antigamente era usado para ver cu de curioso'),
-    new Item('Paracetamol Vencido', 'paracetamol', '../img/paracetamol.png', '50% de chance de ganhar 2 de vida e 50% de chance de perder 1 de vida.'),
-    new Item('Carta Reverso', 'reverso', '../img/reverso.png', 'Inverte a direção que o jogo roda. Não acontece nada quando tem apenas 2 jogadores.'),
-    new Item('Carta Bloqueio', 'bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer (Exceto você mesmo). É uma pena que você não consegue se bloquear.')
-]
 
 // Funções dos itens
 function acaoVacina() {
@@ -312,10 +352,6 @@ function acaoBloqueio() {
 
 }
 
-// Lista da mesa
-// Mapa da mesa: [ mesa [ lado [ linha [ coluna ] ] ]]
-const mesa = [[[[], []], [[], []]], [[[], []], [[], []]]]
-
 // Criação de itens na mesa
 function criarItens() {
     itensAtualizados = 0
@@ -323,7 +359,7 @@ function criarItens() {
 
     while (cont < 8 && itensAtualizados < maxAtualizacoes) {
 
-        if (img_itens[cont].src.endsWith(assets.imagens.item_nada)) {
+        if (imgItens[cont].src.endsWith(assets.imagens.item_nada)) {
             const item_aleatorio = itens[Math.floor(Math.random() * itens.length)];
 
             // Atualiza a matriz com o novo item
@@ -337,9 +373,9 @@ function criarItens() {
             mesa[lado][linha][coluna].push(item_aleatorio);
 
             // Atualiza os atributos da imagem
-            img_itens[cont].src = item_aleatorio.src;
-            img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
-            img_itens[cont].setAttribute('data-item', `${item_aleatorio.nomealt}`)
+            imgItens[cont].src = item_aleatorio.src;
+            imgItens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
+            imgItens[cont].setAttribute('data-item', `${item_aleatorio.nomealt}`)
 
             // Eventos para a imagem
             const onMouseOver = (event) => {
@@ -431,10 +467,10 @@ function criarItens() {
 
 
             // Vincula os eventos
-            img_itens[cont].addEventListener("mouseover", onMouseOver);
-            img_itens[cont].addEventListener("mouseout", onMouseOut);
-            img_itens[cont].addEventListener("click", onClick);
-            img_itens[cont].classList.toggle('nada')
+            imgItens[cont].addEventListener("mouseover", onMouseOver);
+            imgItens[cont].addEventListener("mouseout", onMouseOut);
+            imgItens[cont].addEventListener("click", onClick);
+            imgItens[cont].classList.toggle('nada')
 
 
             itensAtualizados++;
@@ -506,13 +542,4 @@ function novaRodada() {
 document.body.onload = () => {
     atualizaVida()
     novaRodada()
-}
-
-// Variáveis do Jogador
-let jogador = {
-    nome: '',
-    itens: mesa,
-    suaVez: false,
-    vida: vida,
-    vivo: vivo
 }

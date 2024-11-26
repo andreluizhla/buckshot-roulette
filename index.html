@@ -1,18 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buckshot Roulette: Definição</title>
-</head>
-<body>
-    <main>
-        <h1>Defina quem é você:</h1>
-        <a href="player/index.html">Jogador</a>
-        <a href="game/index.html">Jogo</a>
-        <h2>Definições:</h2>
-        <p>Jogador: Pessoa que irá receber os itens, tem uma barra de vida, etc.</p>
-        <p>Jogo: Pessoa que irá cuidar da escopeta do jogo</p>
-    </main>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="apple-touch-icon" sizes="180x180" href="../favicon/">
+        <link rel="icon" type="image/png" sizes="32x32" href="../favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon/favicon-16x16.png">
+        <link rel="manifest" href="../favicon/site.webmanifest">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+            * {
+                padding: 0px;
+                margin: 0px;
+                font-family: "Outfit", sans-serif;
+            }
+
+            html, body, main {
+                height: -webkit-fill-available;
+                display: grid;
+                align-content: center;
+                justify-content: center;
+                align-items: center;
+                justify-items: center;
+            }
+            
+            h1, p {
+                margin-bottom: 20px;
+            }
+
+            #formulario {
+                display: grid;
+            }
+
+            input {
+                padding: 10px;
+                width: 350px;
+                text-align: center;
+                margin: 5px;
+            }
+
+            #botoes {
+                display: flex;
+            }
+
+            button {
+                padding: 10px;
+                margin: 5px;
+                width: 50%;
+            }
+        </style>
+        <title>Buckshot Roulette: Definição</title>
+    </head>
+    <body>
+        <main>
+            <h1>Buckshot Roulette Brasileiro</h1>
+            <p>Chame seu amigo (se você tiver um) para apostar suas vidas e ganhar alguns trocados por isso</p>
+            <div id="formulario">
+                <input type="text" name="nickname" id="nickname" placeholder="Digite aqui o seu nickname (seja criativo)">
+                <input type="text" name="salaId" id="salaId" placeholder="Digite aqui o código da sala">
+                <div id="botoes">
+                    <button type="button" id="criarSala" class="bnt">Criar sala</button>
+                    <button type="button" id="entrar" class="bnt">Entrar na sala</button>
+                </div>
+            </div>
+            <div id="nome-sala"></div>
+            <script type="module">
+                import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+                import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+                
+                const firebaseConfig = {
+                    apiKey: "AIzaSyC_zuUFWuikE7cnw6G0SyuTHGfvk0Y0iWs",
+                    authDomain: "andre-buckshot-roulette.firebaseapp.com",
+                    projectId: "andre-buckshot-roulette",
+                    storageBucket: "andre-buckshot-roulette.firebasestorage.app",
+                    messagingSenderId: "351821686011",
+                    appId: "1:351821686011:web:bed206dccc1a6adacb3c5e",
+                    measurementId: "G-R05R97EXEY"
+                };
+            
+                const app = initializeApp(firebaseConfig);
+                const database = getDatabase(app);
+            
+                const entrar = document.getElementById('entrar');
+                const criarSala = document.getElementById('criarSala');
+                const nickname = document.getElementById('nickname');
+                const idSala = document.getElementById('salaId');
+                const divSala = document.getElementById('nome-sala');
+            
+                // Criação de uma sala
+                document.getElementById("criarSala").onclick = () => {
+                    const salaId = Math.random().toString(36).substr(2, 9);
+                    const salaRef = ref(database, `salas/${salaId}`);
+                    
+                    localStorage.setItem("idSalaLocal", salaId);
+                    
+                    // Registra a sala no Firebase
+                    set(salaRef, {
+                        status: "aguardando",
+                        jogadores: {},
+                        rodada: 1,
+                        cartucho: [],
+                        ordem: 1
+                    })
+                    .then(() => {
+                        divSala.innerHTML = `<p>Sala criada com sucesso! <br>Código da sala: <strong>${salaId}</strong></p><button type="button" id="copiaCodigo" class="bnt">Copiar o código</button>`;
+
+                        // Associa o evento ao botão recém-criado
+                        const copiaCodigoButton = document.getElementById('copiaCodigo');
+                        copiaCodigoButton.onclick = () => {
+                            navigator.clipboard.writeText(salaId).then(() => {
+                                window.alert('Código da sala copiado para a área de transferência!');
+                            }).catch((error) => {
+                                window.alert('Erro ao copiar o código da sala!');
+                            });
+                        };
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao criar sala:", error);
+                        divSala.innerHTML = `<p>Erro ao criar a sala, para corrigir, siga esses passos:</p>
+                        <ol>
+                            <li>Recarrege a página</li>
+                            <li>Preencha os campos corretamente</li>
+                            <li>Verifique se tem conexão com a internet</li>
+                        </ol>
+                        <p>Se por acaso nenhuma das dicas anteriores funcionou, tire print do erro e mostre para o programador do site: André Luiz <br> Erro ao criar a sala: ${error}</p>`
+                    });
+                };
+
+                document.getElementById('entrar').onclick = () => {
+                    if (nickname.value && idSala.value) {
+                        localStorage.setItem("nickname", nickname.value)
+                        localStorage.setItem("idSalaLocal", idSala.value)
+                        window.location.href = '/player/index.html'
+                    } else {
+                        console.log('Não pode, pois: ', nickname.value, idSala.value)
+                    }
+                }
+            </script>
+        </main>
+    </body>
 </html>
