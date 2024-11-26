@@ -261,7 +261,7 @@ document.getElementById("shotgun").onclick = () => {
             setTimeout(() => {if (cartucho_atual.length == 0) {
                 novaRodada()
             }
-        }, 2000)  
+        }, 1500)  
         } else {
             window.alert('Calma calabreso kkkkk, pegue os itens da caixa antes')
         }
