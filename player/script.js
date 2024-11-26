@@ -19,7 +19,10 @@ document.getElementById("criar-sala").onclick = () => {
 
     set(salaRef, {
         status: "aguardando",
-        jogadores: []
+        jogadores: {},
+        rodada: 1,
+        cartucho: [],
+        ordem: 1
     })
         .then(() => {
             console.log("Sala criada com sucesso!", salaId);
@@ -28,7 +31,28 @@ document.getElementById("criar-sala").onclick = () => {
         .catch((error) => {
             console.error("Erro ao criar sala:", error);
         });
+    
 };
+
+// Entrada de jogadores
+document.getElementById('entrar').onclick = () => {
+    console.log(jogador)
+    jogador.nome = window.prompt('Nome do jogador')
+    const salaId = window.prompt('Código da sala')
+    console.log(jogador.nome)
+    console.log(salaId)
+    adicionarJogador(salaId, jogador)
+}
+
+function adicionarJogador(salaId, jogador) {
+    const jogadorRef = ref(database, `salas/${salaId}/jogadores/${jogador.nome}`);
+    set(jogadorRef, { vida: jogador.vida, itens: jogador.itens || [] })
+        .then(() => console.log(`${jogador.nome} adicionado à sala ${salaId}`))
+        .catch((err) => console.error("Erro ao adicionar jogador:", err));
+}
+
+function atualizarMesa()
+
 
 // --- Configurações do jogo ---
 
@@ -50,20 +74,21 @@ let rodada = 1;
 let vida = 3;
 let itensAtualizados = 0;
 let maxVida = 4;
-let maxAtualizacoes = 8;
+let maxAtualizacoes = 3;
 let maxRodadas = 3;
 let itensPegos = false;
 let vivo = true
 let dano = 1
 let ordem = 1 // 1 para ordem horária e -1 para ordem anti-horária
+const maxJogadores = 4
 
 
 const assets = {
     imagens: {
         shotgun: "../img/shotgun.png",
         shotgun_atirando: "../img/shotgun_atirando.png",
-        shotgun_dobro : "../img/shotgun-dobro.png",
-        shotgun_dobro_atirando : "../img/shotgun-dobro-atirando.png",
+        shotgun_dobro: "../img/shotgun-dobro.png",
+        shotgun_dobro_atirando: "../img/shotgun-dobro-atirando.png",
         caixa_aberta: "../img/caixa-aberta.png",
         caixa_fechada: "../img/caixa-fechada.png",
         item_nada: "img/nada.png",
@@ -79,6 +104,9 @@ const assets = {
         cartucho_nada: '<img src="../img/cartucho-nada.png" alt="Nada" class="bala">',
     },
 };
+
+
+
 
 // Funções utilitárias
 function geradorNumeroBalas() {
@@ -129,7 +157,7 @@ function atualizaCartuchoSite() {
             : assets.img_html.cartucho_falso;
         c++
     });
-    if (c < 10) 
+    if (c < 10)
         for (c; c < 10; c++)
             cartuchoSite.innerHTML += assets.img_html.cartucho_nada
 }
@@ -174,11 +202,11 @@ document.getElementById("shotgun").onclick = () => {
 // Controle de vida
 function atualizaVida() {
     barraVida.innerHTML = ''
-    if (vida <= 0){
+    if (vida <= 0) {
         vivo = false
         vida = 0
         window.alert('Parabéns, você morreu!')
-    } else if (vida > maxVida){
+    } else if (vida > maxVida) {
         vida = maxVida
         window.alert('Máximo de vida atingido!')
     }
@@ -215,16 +243,16 @@ const itens = [
 
 // Funções dos itens
 function acaoVacina() {
-    
+
 }
 
 function acaoNokia() {
-    if (cartucho_atual.length > 0) {
+    if (cartucho_atual.length > 1) {
         let posicaoBala
         do {
             posicaoBala = Math.floor(Math.random() * cartucho_atual.length)
         } while (posicaoBala == 0)
-        window.alert(`A ${ posicaoBala + 1 } bala é ${cartucho_atual[posicaoBala] == true ? "Verdadeira" : "Falsa"}`)
+        window.alert(`A ${posicaoBala + 1} bala é ${cartucho_atual[posicaoBala] == true ? "Verdadeira" : "Falsa"}`)
     } else {
         window.alert('Não tem o que falar')
     }
@@ -261,27 +289,27 @@ function acaoLupa() {
 
 function acaoParacetamol() {
     if (Math.random() > 0.5) {
-        vida-- 
+        vida--
         console.log('Perdeu -1 de vida')
     } else {
-        if ((vida + 2) >= maxVida){
+        if ((vida + 2) >= maxVida) {
             vida = maxVida
             console.log('Vida máxima atingida')
         } else {
             vida += 2
             console.log('Ganhou +2 de vida')
         }
-    } 
+    }
     console.log(vida)
     atualizaVida()
 }
 
 function acaoReverso() {
-    
+
 }
 
 function acaoBloqueio() {
-    
+
 }
 
 // Lista da mesa
@@ -294,25 +322,25 @@ function criarItens() {
     let cont = 0;
 
     while (cont < 8 && itensAtualizados < maxAtualizacoes) {
-        
+
         if (img_itens[cont].src.endsWith(assets.imagens.item_nada)) {
             const item_aleatorio = itens[Math.floor(Math.random() * itens.length)];
-            
+
             // Atualiza a matriz com o novo item
             const lado = Math.floor(cont / 4); // Índice para o "lado" (0 ou 1)
             const linha = Math.floor((cont % 4) / 2); // Índice para "linha" (0 ou 1)
             const coluna = cont % 2; // Índice para "coluna" (0 ou 1)
-            
+
             if (!Array.isArray(mesa[lado][linha][coluna])) {
                 mesa[lado][linha][coluna] = [];
             }
             mesa[lado][linha][coluna].push(item_aleatorio);
-            
+
             // Atualiza os atributos da imagem
             img_itens[cont].src = item_aleatorio.src;
             img_itens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
             img_itens[cont].setAttribute('data-item', `${item_aleatorio.nomealt}`)
-            
+
             // Eventos para a imagem
             const onMouseOver = (event) => {
                 descricaoDiv.style.display = "block";
@@ -320,25 +348,25 @@ function criarItens() {
                 descricaoDiv.style.top = event.pageY + 10 + "px"; // Desloca a div para baixo
                 descricaoDiv.innerHTML = `<strong>${item_aleatorio.nome}</strong><br>${item_aleatorio.descricao}`;
             };
-            
+
             const onMouseOut = () => {
                 descricaoDiv.style.display = "none";
             };
-            
+
             const onClick = (event) => {
                 const img = event.target; // Elemento que disparou o evento
-                
+
                 switch (event.target.dataset.item) {
                     case "vacina":
                         console.log('Vacina Clicada!')
                         acaoVacina()
                         break;
-                    
+
                     case "nokia":
                         console.log('Nokia Clicada!')
                         acaoNokia()
                         break;
-                
+
                     case "cerra":
                         console.log('Cerra Clicada!')
                         acaoCerra()
@@ -353,7 +381,7 @@ function criarItens() {
                         console.log('Heineken Clicada!')
                         acaoHeineken()
                         break;
-                        
+
                     case "lupa":
                         console.log('Lupa Clicada!')
                         acaoLupa()
@@ -368,7 +396,7 @@ function criarItens() {
                         console.log('Reverso Clicada!')
                         acaoReverso()
                         break;
-                        
+
                     case "bloqueio":
                         console.log('Bloqueio Clicada!')
                         acaoBloqueio()
@@ -378,37 +406,37 @@ function criarItens() {
                         console.error('[ERRO]: Item não identificado!')
                         break;
                 }
-                
+
                 img.setAttribute('data-item', ``)
-                
+
                 // Troca a imagem para "nada"
                 img.src = "../" + assets.imagens.item_nada;
                 img.alt = "Nada";
                 img.classList.toggle('nada')
-                
+
                 // Oculta a descrição e limpa o conteúdo
                 descricaoDiv.style.display = "none";
                 descricaoDiv.innerHTML = "";
-                
+
                 // Desvincula os eventos de descrição
                 img.removeEventListener("mouseover", onMouseOver);
                 img.removeEventListener("mouseout", onMouseOut);
-                
+
                 // Atualiza o contador de itens atualizados
                 if (itensAtualizados > 0) {
                     itensAtualizados--;
                 }
 
             };
-            
-            
+
+
             // Vincula os eventos
             img_itens[cont].addEventListener("mouseover", onMouseOver);
             img_itens[cont].addEventListener("mouseout", onMouseOut);
             img_itens[cont].addEventListener("click", onClick);
             img_itens[cont].classList.toggle('nada')
 
-            
+
             itensAtualizados++;
         }
         cont++;
@@ -437,7 +465,7 @@ function novaRodada() {
     if (rodada <= maxRodadas) {
         if (cartucho_atual.length === 0) {
             console.log(`Iniciando a rodada ${rodada}`);
-            
+
             // Criação de novo cartucho
             criarCartuchoGeral();
 
@@ -447,8 +475,8 @@ function novaRodada() {
             caixa.classList.toggle('aberto')
             caixa.alt = 'Caixa Aberta'
             itensPegos = false;
-            
-            
+
+
             caixa.onclick = () => {
                 if (!itensPegos) {
                     criarItens(); // Cria 3 itens
@@ -478,4 +506,13 @@ function novaRodada() {
 document.body.onload = () => {
     atualizaVida()
     novaRodada()
+}
+
+// Variáveis do Jogador
+let jogador = {
+    nome: '',
+    itens: mesa,
+    suaVez: false,
+    vida: vida,
+    vivo: vivo
 }
