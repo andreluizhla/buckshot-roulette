@@ -535,6 +535,11 @@ function novaRodada() {
 
 document.body.onload = () => {
     atualizaVida()
-    novaRodada()
     adicionarJogador(localStorage.getItem(idSalaLocal), jogador)
 }
+    
+document.getElementById('pronto').onclick = () => {
+    novaRodada()
+}
+
+
