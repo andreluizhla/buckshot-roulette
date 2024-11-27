@@ -133,7 +133,7 @@
                     if (nickname.value && idSala.value) {
                         localStorage.setItem("nickname", nickname.value)
                         localStorage.setItem("idSalaLocal", idSala.value)
-                        window.location.href = 'player/index.html'
+                        window.location.assign('/player/index.html');
                     } else {
                         console.log('Não pode, pois: ', nickname.value, idSala.value)
                     }
