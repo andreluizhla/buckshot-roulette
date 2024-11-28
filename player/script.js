@@ -33,7 +33,7 @@ let cartucho_atual = [];
 let num_vazio = 0;
 let numBalaVerdade = 0;
 let numBalaFalsa = 0;
-let rodada = 1;
+let rodada = 0;
 let vida = 3;
 let itensAtualizados = 0;
 let maxVida = 4;
@@ -45,11 +45,25 @@ let dano = 1
 let ordem = 1 // 1 para ordem horária e -1 para ordem anti-horária
 const maxJogadores = 4
 
+// Caso necessário:
+function reset() {
+    cartucho_atual = [];
+    num_vazio = 0;
+    numBalaVerdade = 0;
+    numBalaFalsa = 0;
+    rodada = 0;
+    vida = 3;
+    itensAtualizados = 0;
+    itensPegos = false;
+    vivo = true
+    dano = 1
+    ordem = 1
+}
 
 const assets = {
     imagens: {
         shotgun: "../img/shotgun.png",
-        shotgun_atirando: "../img/shotgun_atirando.png",
+        shotgun_atirando: "../img/shotgun-atirando.png",
         shotgun_dobro: "../img/shotgun-dobro.png",
         shotgun_dobro_atirando: "../img/shotgun-dobro-atirando.png",
         caixa_aberta: "../img/caixa-aberta.png",
@@ -167,6 +181,19 @@ function adicionarJogador(salaId, jogador) {
 
 function atualizarMesa(){
 
+}
+
+
+function atualizarDados(jogador){
+    update(jogadorRef, {
+        itens: jogador.itens,
+        vida: jogador.vida,
+        vivo: jogador.vivo,
+        suaVez: jogador.suaVez,
+        bloqueado: jogador.bloqueado
+    })
+    .then(() => console.log(`${jogador.nickname} atualizou suas informações`))
+    .catch((err) => console.error("Erro ao atualizar as iformações do jogador:", err));
 }
 
 
@@ -380,6 +407,15 @@ function criarItens() {
                 mesa[lado][linha][coluna] = [];
             }
             mesa[lado][linha][coluna].push(item_aleatorio);
+            jogador.itens[lado][linha][coluna].push(item_aleatorio.nomealt);
+            console.log(jogador)
+            try {
+                update(jogadorRef, { itens: jogador.itens });
+                console.log("Item atualizado com sucesso!");
+            } catch (err) {
+                console.error("Erro ao atualizar item no Firebase:", err);
+            }
+            atualizarDados(jogador)
 
             // Atualiza os atributos da imagem
             imgItens[cont].src = item_aleatorio.src;
@@ -492,7 +528,7 @@ document.addEventListener("mousemove", (event) => {
 
 function novaRodada() {
     // Verifica se o número máximo de rodadas foi alcançado
-    if (rodada <= maxRodadas) {
+    if (rodada < maxRodadas) {
         if (cartucho_atual.length === 0) {
             console.log(`Iniciando a rodada ${rodada}`);
 
@@ -523,6 +559,43 @@ function novaRodada() {
 
             // Incrementa a rodada
             rodada++;
+       
+            // Incrementa a rodada
+            rodada++;
+            update(salaRef, {
+                rodada: rodada
+            })
+
+            
+            setTimeout(() => {
+                console.log(`Iniciando a rodada ${rodada}`);
+    
+                // Criação de novo cartucho
+                criarCartuchoGeral();
+    
+                // Atualiza o estado da caixa para aberta e habilita o evento de clique
+                caixa.src = assets.imagens.caixa_aberta;
+                caixa.classList.toggle('fechado')
+                caixa.classList.toggle('aberto')
+                caixa.alt = 'Caixa Aberta'
+                itensPegos = false;
+    
+    
+                caixa.onclick = () => {
+                    if (!itensPegos) {
+                        criarItens(); // Cria 3 itens
+                        caixa.src = assets.imagens.caixa_fechada; // Fecha a caixa
+                        caixa.classList.toggle('aberto')
+                        caixa.classList.toggle('fechado')
+                        caixa.alt = 'Caixa Fechada'
+                        itensPegos = true; // Impede a criação duplicada
+                        console.log(`Itens criados na rodada ${rodada}`);
+                    } else {
+                        console.log("Os itens já foram criados nesta rodada.");
+                    }
+                };
+    
+            }, 1500)
         } else {
             console.log("O cartucho ainda não foi utilizado por completo.");
         }
@@ -539,6 +612,11 @@ document.body.onload = () => {
 }
     
 document.getElementById('pronto').onclick = () => {
+    update(salaRef, {
+        status: 'jogando',
+        rodada: rodada,
+        ordem: ordem
+    })
     novaRodada()
 }
 
