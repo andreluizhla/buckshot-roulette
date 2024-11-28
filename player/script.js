@@ -1,23 +1,10 @@
+// Era uma vez...
+
 // Importação e configuração do Firebase Database
 import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
+
 // --- Configurações do jogo ---
-
-// Caso necessário:
-function reset() {
-    var cartucho_atual = [];
-    var num_vazio = 0;
-    var numBalaVerdade = 0;
-    var numBalaFalsa = 0;
-    var rodada = 1;
-    var vida = 3;
-    var itensAtualizados = 0;
-    var itensPegos = false;
-    var vivo = true
-    var dano = 1
-    var ordem = 1
-}
-
 
 // Variáveis do site
 const shotgun = document.getElementById("shotgun");
@@ -121,19 +108,49 @@ let jogador = {
     bloqueado: false
 }
 console.log(jogador)
+
+let jogadores = [
+    {
+        "nickname": "ShadowHunter",
+        "vida": 4,
+        "itens": [[[["vacina"], ["reverso"]]], [[[], []], [[], []]]],
+        "vivo": true,
+        "suaVez": false,
+        "bloqueado": false
+    },
+    {
+        "nickname": "IronFist",
+        "vida": 2,
+        "itens": [[[["heineken"], ["lupa"]]], [[[], []], [[], []]]],
+        "vivo": true,
+        "suaVez": false,
+        "bloqueado": false
+    },
+    {
+        "nickname": "SilentKiller",
+        "vida": 1,
+        "itens": [[[["bloqueio"], ["cingarro"]]], [[[], []], [[], []]]],
+        "vivo": true,
+        "suaVez": false,
+        "bloqueado": true
+    }
+]
+
 //Configurações do banco de dados
 
 const app = window.firebaseApp;
 const database = window.firebaseDatabase;
-let idSalaLocal = localStorage.getItem("idSalaLocal")
 
 // Verificadores de banco de dados
 if (!app) console.error("Erro ao importar o APP");
 if (!database) console.error("Firebase Database não foi inicializado.");
 
+let idSalaLocal = localStorage.getItem("idSalaLocal")
+const jogadorRef = ref(database, `salas/${idSalaLocal}/jogadores/${jogador.nickname}`);
+const salaRef = ref(database, `salas/${idSalaLocal}`);
 
-// Criação de uma sala
-// {
+
+// Criação de uma sala {
 //     if (!database) {
 //         console.error("Firebase Database não foi inicializado.");
 //         return;
@@ -173,14 +190,15 @@ if (!database) console.error("Firebase Database não foi inicializado.");
 // }
 
 function adicionarJogador(salaId, jogador) {
-    const jogadorRef = ref(database, `salas/${salaId}/jogadores/${jogador.nickname}`);
     set(jogadorRef, { vida: jogador.vida, itens: jogador.itens || [] })
-        .then(() => console.log(`${jogador.nickname} adicionado à sala ${salaId}`))
-        .catch((err) => console.error("Erro ao adicionar jogador:", err));
+    .then(() => console.log(`${jogador.nickname} adicionado à sala ${salaId}`))
+    .catch((err) => console.error("Erro ao adicionar jogador:", err));
 }
 
-function atualizarMesa(){
-
+function atualizarDados(jogador){
+    update(jogadorRef, {itens: jogador.itens })
+    .then(() => console.log(`${jogador.nickname} atualizou suas informações`))
+    .catch((err) => console.error("Erro ao atualizar as iformações do jogador:", err));
 }
 
 
@@ -240,12 +258,17 @@ function embaralharCartucho(array) {
 }
 
 function atualizaCartuchoSite() {
+    update(salaRef, {
+        cartucho: cartucho_atual
+    })
+
     cartuchoSite.innerHTML = "";
     let c = 0
     cartucho_atual.forEach((bala) => {
         cartuchoSite.innerHTML += bala
             ? assets.img_html.bala_verdadeiro
             : assets.img_html.bala_falso;
+        
         c++
     });
     if (c < 10)
@@ -285,10 +308,9 @@ document.getElementById("shotgun").onclick = () => {
                 dano /= 2
             }
             atualizaCartuchoSite();
-            setTimeout(() => {if (cartucho_atual.length == 0) {
+            if (cartucho_atual.length == 0) {
                 novaRodada()
             }
-        }, 1500)  
         } else {
             window.alert('Calma calabreso kkkkk, pegue os itens da caixa antes')
         }
@@ -315,7 +337,6 @@ function atualizaVida() {
         iconeVida.style.color = "#ffffff";
         barraVida.appendChild(iconeVida);
     }
-    console.log(vida)
 }
 
 // Funções dos itens
@@ -409,6 +430,7 @@ function criarItens() {
             mesa[lado][linha][coluna].push(item_aleatorio);
             jogador.itens[lado][linha][coluna].push(item_aleatorio.nomealt);
             console.log(jogador)
+
             try {
                 update(jogadorRef, { itens: jogador.itens });
                 console.log("Item atualizado com sucesso!");
@@ -530,43 +552,12 @@ function novaRodada() {
     // Verifica se o número máximo de rodadas foi alcançado
     if (rodada < maxRodadas) {
         if (cartucho_atual.length === 0) {
-            console.log(`Iniciando a rodada ${rodada}`);
-
-            // Criação de novo cartucho
-            criarCartuchoGeral();
-
-            // Atualiza o estado da caixa para aberta e habilita o evento de clique
-            caixa.src = assets.imagens.caixa_aberta;
-            caixa.classList.toggle('fechado')
-            caixa.classList.toggle('aberto')
-            caixa.alt = 'Caixa Aberta'
-            itensPegos = false;
-
-
-            caixa.onclick = () => {
-                if (!itensPegos) {
-                    criarItens(); // Cria 3 itens
-                    caixa.src = assets.imagens.caixa_fechada; // Fecha a caixa
-                    caixa.classList.toggle('aberto')
-                    caixa.classList.toggle('fechado')
-                    caixa.alt = 'Caixa Fechada'
-                    itensPegos = true; // Impede a criação duplicada
-                    console.log(`Itens criados na rodada ${rodada}`);
-                } else {
-                    console.log("Os itens já foram criados nesta rodada.");
-                }
-            };
-
-            // Incrementa a rodada
-            rodada++;
-       
             // Incrementa a rodada
             rodada++;
             update(salaRef, {
                 rodada: rodada
             })
 
-            
             setTimeout(() => {
                 console.log(`Iniciando a rodada ${rodada}`);
     
@@ -594,7 +585,6 @@ function novaRodada() {
                         console.log("Os itens já foram criados nesta rodada.");
                     }
                 };
-    
             }, 1500)
         } else {
             console.log("O cartucho ainda não foi utilizado por completo.");
@@ -602,13 +592,13 @@ function novaRodada() {
     } else {
         // Fim do jogo
         console.log("O jogo acabou! Obrigado por jogar!");
-        window.alert("O jogo acabou! Obrigado por jogar!");
+        reset()
     }
 }
 
 document.body.onload = () => {
     atualizaVida()
-    adicionarJogador(localStorage.getItem(idSalaLocal), jogador)
+    adicionarJogador(localStorage.getItem('idSalaLocal'), jogador)
 }
     
 document.getElementById('pronto').onclick = () => {
@@ -621,3 +611,6 @@ document.getElementById('pronto').onclick = () => {
 }
 
 
+
+
+// Fim.
