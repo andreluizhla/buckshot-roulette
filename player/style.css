@@ -110,8 +110,9 @@ footer{
     cursor: grab;
 }
 
-#direcao-tiro {
-    position: absolute;
-    display: none;
+#vez-jogador {
+    font-size: 1.5em; 
+    text-align: center; 
+    margin-top: 20px;
 }
 

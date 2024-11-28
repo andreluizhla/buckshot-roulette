@@ -20,7 +20,7 @@ let cartucho_atual = [];
 let num_vazio = 0;
 let numBalaVerdade = 0;
 let numBalaFalsa = 0;
-let rodada = 1;
+let rodada = 0;
 let vida = 3;
 let itensAtualizados = 0;
 let maxVida = 4;
@@ -38,7 +38,7 @@ function reset() {
     num_vazio = 0;
     numBalaVerdade = 0;
     numBalaFalsa = 0;
-    rodada = 1;
+    rodada = 0;
     vida = 3;
     itensAtualizados = 0;
     itensPegos = false;
@@ -50,7 +50,7 @@ function reset() {
 const assets = {
     imagens: {
         shotgun: "../img/shotgun.png",
-        shotgun_atirando: "../img/shotgun_atirando.png",
+        shotgun_atirando: "../img/shotgun-atirando.png",
         shotgun_dobro: "../img/shotgun-dobro.png",
         shotgun_dobro_atirando: "../img/shotgun-dobro-atirando.png",
         caixa_aberta: "../img/caixa-aberta.png",
@@ -197,6 +197,19 @@ function adicionarJogador(salaId, jogador) {
 
 function atualizarDados(jogador){
     update(jogadorRef, {itens: jogador.itens })
+    .then(() => console.log(`${jogador.nickname} atualizou suas informações`))
+    .catch((err) => console.error("Erro ao atualizar as iformações do jogador:", err));
+}
+
+
+function atualizarDados(jogador){
+    update(jogadorRef, {
+        itens: jogador.itens,
+        vida: jogador.vida,
+        vivo: jogador.vivo,
+        suaVez: jogador.suaVez,
+        bloqueado: jogador.bloqueado
+    })
     .then(() => console.log(`${jogador.nickname} atualizou suas informações`))
     .catch((err) => console.error("Erro ao atualizar as iformações do jogador:", err));
 }
@@ -417,7 +430,13 @@ function criarItens() {
             mesa[lado][linha][coluna].push(item_aleatorio);
             jogador.itens[lado][linha][coluna].push(item_aleatorio.nomealt);
             console.log(jogador)
-            atualizarDados(idSalaLocal, jogador)
+            try {
+                update(jogadorRef, { itens: jogador.itens });
+                console.log("Item atualizado com sucesso!");
+            } catch (err) {
+                console.error("Erro ao atualizar item no Firebase:", err);
+            }
+            atualizarDados(jogador)
 
             // Atualiza os atributos da imagem
             imgItens[cont].src = item_aleatorio.src;
@@ -530,8 +549,14 @@ document.addEventListener("mousemove", (event) => {
 
 function novaRodada() {
     // Verifica se o número máximo de rodadas foi alcançado
-    if (rodada <= maxRodadas) {
+    if (rodada < maxRodadas) {
         if (cartucho_atual.length === 0) {
+          
+            // Incrementa a rodada
+            rodada++;
+            update(salaRef, {
+                rodada: rodada
+            })
 
             setTimeout(() => {
                 console.log(`Iniciando a rodada ${rodada}`);
@@ -560,9 +585,6 @@ function novaRodada() {
                         console.log("Os itens já foram criados nesta rodada.");
                     }
                 };
-    
-                // Incrementa a rodada
-                rodada++;
             }, 1500)
         } else {
             console.log("O cartucho ainda não foi utilizado por completo.");
@@ -580,6 +602,11 @@ document.body.onload = () => {
 }
     
 document.getElementById('pronto').onclick = () => {
+    update(salaRef, {
+        status: 'jogando',
+        rodada: rodada,
+        ordem: ordem
+    })
     novaRodada()
 }
 
