@@ -130,10 +130,16 @@
                 };
 
                 document.getElementById('entrar').onclick = () => {
-                    if (nickname.value && idSala.value) {
+                    console.log(`Jogaor: ${nickname.value} Sala: ${idSala.value}`)
+                    if (nickname.value != null && idSala.value != null) {
                         localStorage.setItem("nickname", nickname.value)
                         localStorage.setItem("idSalaLocal", idSala.value)
-                        window.location.href += 'player/index.html'
+                        if (window.location.href.endsWith('index.html')){
+                            window.location.href = 'player/index.html'
+                        } else {
+                            window.location.href += 'player/index.html'
+                        }
+                        console.log(window.location.href)
                     } else {
                         console.log('Não pode, pois uma das informações estão incompletas')
                     }
