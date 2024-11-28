@@ -430,6 +430,7 @@ function criarItens() {
             mesa[lado][linha][coluna].push(item_aleatorio);
             jogador.itens[lado][linha][coluna].push(item_aleatorio.nomealt);
             console.log(jogador)
+
             try {
                 update(jogadorRef, { itens: jogador.itens });
                 console.log("Item atualizado com sucesso!");
@@ -551,7 +552,6 @@ function novaRodada() {
     // Verifica se o número máximo de rodadas foi alcançado
     if (rodada < maxRodadas) {
         if (cartucho_atual.length === 0) {
-          
             // Incrementa a rodada
             rodada++;
             update(salaRef, {
