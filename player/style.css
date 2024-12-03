@@ -19,11 +19,11 @@ body{
 }
 
 header {
-    position: absolute;
+    position: fixed;
     top: 0;
-    width: 98vw;
+    width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;  
 }
 
 #barra-vida{
@@ -68,7 +68,7 @@ main{
 }
 
 #shotgun{
-    max-height: 750px;
+    max-height: 524px;
 }
 
 .bala{
@@ -116,3 +116,12 @@ footer{
     margin-top: 20px;
 }
 
+@media (max-width: 1500px) {
+    img {
+        width: 100px;
+    }
+
+    .bala {
+        width: 30px;
+    }
+}
