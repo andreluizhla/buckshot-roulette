@@ -1,7 +1,7 @@
 // Era uma vez...
 
 // Importação e configuração do Firebase Database
-import { getDatabase, ref, set, get, update, onValue, serverTimestamp, push, onChildAdded } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { ref, set, get, update, onValue, serverTimestamp, push, onChildAdded, onChildChanged, onChildRemoved } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
 
 // --- Configurações do jogo ---
@@ -17,6 +17,8 @@ const descricaoDiv = document.getElementById("descricao-item");
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const playerList = document.getElementById('players-list')
+const mensagemContainer = document.getElementById('mensagensContainer')
+const mensagemElement = document.createElement('p')
 
 
 // Variáveis do jogo
@@ -73,12 +75,6 @@ const assets = {
     },
 };
 
-
-// Lista da mesa
-// Mapa da mesa: [ mesa [ lado [ linha [ coluna ] ] ]]
-// const mesa = [[[[], []], [[], []]], [[[], []], [[], []]]]
-
-
 // Itens e classe Item
 class Item {
     constructor(nome, nomealt, src, descricao) {
@@ -101,7 +97,6 @@ const itens = [
     new Item('Carta Bloqueio', 'bloqueio', '../img/bloqueio.png', 'Bloqueia a vez de quem você quizer (Exceto você mesmo). É uma pena que você não consegue se bloquear.')
 ]
 
-
 // Variáveis do Jogador
 let jogador = {
     nickname: localStorage.getItem('nickname'),
@@ -112,33 +107,6 @@ let jogador = {
     bloqueado: false
 }
 
-// let jogadores = [
-// {
-//         "nickname": "IronSec",
-//         "vida": 4,
-//         "itens": [[[["vacina"], ["reverso"]]], [[[], []], [[], []]]],
-//         "vivo": true,
-//         "suaVez": false,
-//         "bloqueado": false
-//     },
-//     {
-//         "nickname": "FireThird",
-//         "vida": 2,
-//         "itens": [[[["heineken"], ["lupa"]]], [[[], []], [[], []]]],
-//         "vivo": true,
-//         "suaVez": false,
-//         "bloqueado": false
-//     },
-//     {
-//         "nickname": "FourthKnigth",
-//         "vida": 1,
-//         "itens": [[[["bloqueio"], ["cingarro"]]], [[[], []], [[], []]]],
-//         "vivo": true,
-//         "suaVez": false,
-//         "bloqueado": true
-//     }
-// ]
-
 //Configurações do banco de dados
 
 const app = window.firebaseApp;
@@ -148,12 +116,41 @@ const database = window.firebaseDatabase;
 if (!app) console.error("Erro ao importar o APP");
 if (!database) console.error("Firebase Database não foi inicializado.");
 
-let idSalaLocal = localStorage.getItem("idSalaLocal");
-const jogadorRef = ref(database, `salas/${idSalaLocal}/jogadores/${jogador.nickname}`);
-const salaRef = ref(database, `salas/${idSalaLocal}`);
-const mensagensRef = ref(database, `salas/${idSalaLocal}/mensagens`)
-const jogadoresRef = ref(database, `salas/${idSalaLocal}/jogadores`)
+// let salaId = localStorage.getItem("salaId");
+let params = new URLSearchParams(window.location.search)
+let salaId = params.get('salaId')
+if (params.has('salaId')) {
+    if (localStorage.getItem('nickname') == 'undefined' || localStorage.getItem('nickname') == null) {
+        jogador.nickname = window.prompt('Andtes de começar, digite o seu nickname')
+        localStorage.setItem('nickname', jogador.nickname)
+    }
+} else {
+    window.alert('Não foi possível entrar na sala pois tem algo de errado com o link\nRedirecionando para a página inicial...')
+    window.location = '../index.html'
+}
 
+const jogadorRef = ref(database, `salas/${salaId}/jogadores/${jogador.nickname}`);
+const salaRef = ref(database, `salas/${salaId}`);
+const mensagensRef = ref(database, `salas/${salaId}/mensagens`)
+const jogadoresRef = ref(database, `salas/${salaId}/jogadores`)
+
+
+let adversarios = []
+
+get(jogadoresRef, (snapshot) => {
+    if (snapshot.val().nickname != jogador.nickname) {
+        adversarios.push(snapshot.val())
+        console.log('hoje nao')
+    }
+})
+
+onChildChanged(jogadoresRef, (snapshot) => {
+    if (snapshot.val().nickname != jogador.nickname) {
+        console.log(`Jogador Atualizado: ${snapshot.key}, ${snapshot.val()}`)
+        console.log(snapshot.val())
+        adversarios.push(snapshot.val())
+    }
+})
 
 // Funções usando banco de dados
 function adicionarJogador(salaId, jogador) {
@@ -327,10 +324,10 @@ function shootPlayer(playerId) {
 }
 
 // Prevenir que o usuário interaja com os itens atrás enquanto o modal estiver visível
-// overlay.addEventListener('click', () => {
-//     modal.classList.remove('show');
-//     overlay.classList.remove('show');
-// });
+overlay.addEventListener('click', () => {
+    modal.classList.remove('show');
+    overlay.classList.remove('show');
+});
 
 
 // Controle de vida
@@ -354,11 +351,11 @@ function atualizaVida() {
 
 // Funções dos itens
 function acaoVacina() {
-    adicionarMensagem(`O ${jogador.nickname} usou a Vacina do SUS`)
+    adicionarMensagem(`usou a Vacina do SUS`)
 }
 
 function acaoNokia() {
-    adicionarMensagem(`O ${jogador.nickname} usou o Nokia`)
+    adicionarMensagem(`usou o Nokia`)
 
     if (cartucho_atual.length > 1) {
         let posicaoBala
@@ -373,7 +370,7 @@ function acaoNokia() {
 
 
 function acaoCerra() {
-    adicionarMensagem(`O ${jogador.nickname} usou a Cerra`)
+    adicionarMensagem(`usou a Cerra`)
 
     if (dano == 1) {
         dano *= 2
@@ -384,14 +381,14 @@ function acaoCerra() {
 }
 
 function acaoCingarro() {
-    adicionarMensagem(`O ${jogador.nickname} fumou um Cigarro`)
+    adicionarMensagem(`fumou um Cigarro`)
 
     vida++
     atualizaVida()
 }
 
 function acaoHeineken() {
-    adicionarMensagem(`O ${jogador.nickname} usou tomou uma Heineken`)
+    adicionarMensagem(`usou tomou uma Heineken`)
 
     cartucho_atual.shift()
     som('tirofake')
@@ -399,7 +396,7 @@ function acaoHeineken() {
 }
 
 function acaoLupa() {
-    adicionarMensagem(`O ${jogador.nickname} usou a Lupa`)
+    adicionarMensagem(`usou a Lupa`)
 
     if (cartucho_atual.length > 0) {
         window.alert(`A próxima bala é ${cartucho_atual[0] == true ? "Verdadeira" : "Falsa"}`)
@@ -409,7 +406,7 @@ function acaoLupa() {
 }
 
 function acaoParacetamol() {
-    adicionarMensagem(`O ${jogador.nickname} tomou uma cartela inteira de Paracetamol Vencido`)
+    adicionarMensagem(`tomou uma cartela inteira de Paracetamol Vencido`)
 
     if (Math.random() > 0.5) {
         vida--
@@ -427,7 +424,7 @@ function acaoParacetamol() {
 }
 
 function acaoReverso() {
-    adicionarMensagem(`O ${jogador.nickname} usou o Reverso e gritou: "UNO!"`)
+    adicionarMensagem(`usou o Reverso e gritou: "UNO!"`)
 
     ordem = ordem === 1 ? -1 : 1;
     update(salaRef, {
@@ -437,7 +434,7 @@ function acaoReverso() {
 }
 
 function acaoBloqueio() {
-    adicionarMensagem(`O ${jogador.nickname} usou um bloqueio no Jogador`)
+    adicionarMensagem(`usou um bloqueio no Jogador`)
 
     get(jogadoresRef)
         .then((snapshot) => {
@@ -645,7 +642,7 @@ window.onload = () => {
             if (dadosSala.jogadores?.hasOwnProperty(jogador.nickname)) {
                 console.log(`${jogador.nickname} já existe na sala`)
             } else {
-                adicionarJogador(localStorage.getItem('idSalaLocal'), jogador)
+                adicionarJogador(salaId, jogador)
             }
         } else {
             console.log('A sala já está em andamento')
@@ -695,7 +692,7 @@ document.getElementById('sair-sala').onclick = () => {
                 update(salaRef, {
                     jogadores: delete jogadores[jogador.nickname],
                 })
-                adicionarMensagem(`${jogador.nickname} saiu da partida`)
+                adicionarMensagem(`saiu da partida`)
                 window.location.href = '/index.html'
             } else {
                 alert('Jogador já não se encontra na sala')
@@ -715,6 +712,7 @@ document.getElementById('sair-sala').onclick = () => {
 
 function adicionarMensagem(textoMensagem) {
     push(mensagensRef, {
+        jogador: jogador.nickname,
         texto: textoMensagem,
         timestamp: serverTimestamp()
     })
@@ -722,14 +720,12 @@ function adicionarMensagem(textoMensagem) {
 
 onChildAdded(mensagensRef, (snapshot) => {
     const mensagem = snapshot.val()
-    exibirMensagemNaTela(mensagem.texto, mensagem.timestamp)
+    exibirMensagemNaTela(jogador.nickname, mensagem.texto, mensagem.timestamp)
     
 })
 
-function exibirMensagemNaTela(texto, timestamp) {
-    const mensagemContainer = document.getElementById('mensagensContainer')
-    const mensagemElement = document.createElement('p')
-    mensagemContainer.innerText = `${new Date(timestamp).toLocaleTimeString()} - ${texto}`
+function exibirMensagemNaTela(jogador, texto, timestamp) {
+    mensagemContainer.innerHTML += `${new Date(timestamp).toLocaleTimeString()} - O <strong class="nickname">${jogador}</strong> ${texto}`
     mensagemContainer.appendChild(mensagemElement)
 
     mensagemContainer.scrollTop = mensagemContainer.scrollHeight

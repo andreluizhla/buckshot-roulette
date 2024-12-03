@@ -59,11 +59,13 @@
             <p>Chame seu amigo (se você tiver um) para apostar suas vidas e ganhar alguns trocados por isso</p>
             <div id="formulario">
                 <input type="text" name="nickname" id="nickname" placeholder="Digite aqui o seu nickname (seja criativo)">
-                <input type="text" name="salaId" id="salaId" placeholder="Digite aqui o código da sala">
-                <div id="botoes">
-                    <button type="button" id="criarSala" class="bnt">Criar sala</button>
-                    <button type="button" id="entrar" class="bnt">Entrar na sala</button>
-                </div>
+                <form action="player/index.html" >
+                    <input type="text" name="salaId" id="salaId" placeholder="Digite aqui o código da sala">
+                    <div id="botoes">
+                        <button type="button" id="criarSala" class="bnt">Criar sala</button>
+                        <button type="submit" id="entrar" class="bnt">Entrar na sala</button>
+                    </div>
+                </form>
             </div>
             <div id="nome-sala"></div>
             <script type="module">
@@ -94,7 +96,7 @@
                     const salaId = Math.random().toString(36).substr(2, 9);
                     const salaRef = ref(database, `salas/${salaId}`);
                     
-                    localStorage.setItem("idSalaLocal", salaId);
+                    localStorage.setItem("salaId", salaId);
                     
                     // Registra a sala no Firebase
                     set(salaRef, {
@@ -107,16 +109,17 @@
                     })
                     .then(() => {
                         divSala.innerHTML = `<p>Sala criada com sucesso! <br>Código da sala: <strong>${salaId}</strong></p><button type="button" id="copiaCodigo" class="bnt">Copiar o código</button>`;
+                        navigator.clipboard.writeText(salaId)
 
                         // Associa o evento ao botão recém-criado
-                        const copiaCodigoButton = document.getElementById('copiaCodigo');
-                        copiaCodigoButton.onclick = () => {
+                        document.getElementById('copiaCodigo').addEventListener('click', () => {
                             navigator.clipboard.writeText(salaId).then(() => {
-                                window.alert('Código da sala copiado para a área de transferência!');
+                                alert('Código da sala copiado para a área de transferência!');
                             }).catch((error) => {
-                                window.alert('Erro ao copiar o código da sala!');
+                                alert('Erro ao copiar o código da sala!');
                             });
-                        };
+
+                        })
                     })
                     .catch((error) => {
                         console.error("Erro ao criar sala:", error);
@@ -131,18 +134,19 @@
                 };
 
                 document.getElementById('entrar').onclick = () => {
-                    console.log(`Jogaor: ${nickname.value} Sala: ${idSala.value}`)
-                    if (nickname.value != null && idSala.value != null) {
-                        localStorage.setItem("nickname", nickname.value)
-                        localStorage.setItem("idSalaLocal", idSala.value)
-                        if (window.location.href.endsWith('index.html')){
-                            window.location.href = 'player/index.html'
-                        } else {
-                            window.location.href += 'player/index.html'
-                        }
-                        console.log(window.location.href)
+                    event.preventDefault()
+
+                    console.log(`Jogador: ${nickname.value} Sala: ${idSala.value}`)
+                    if (!nickname.value.trim() && !idSala.value.trim()) {
+                        alert('Não pode, pois uma das informações estão incompletas')
                     } else {
-                        console.log('Não pode, pois uma das informações estão incompletas')
+                        localStorage.setItem("nickname", nickname.value)
+                        localStorage.setItem("salaId", idSala.value)
+                        if (window.location.href.endsWith('index.html')){
+                            window.location.href = `player/index.html?salaId=${idSala.value}`
+                        } else {
+                            window.location.href += `player/index.html?salaId=${idSala.value}`
+                        }
                     }
                 }
             </script>
