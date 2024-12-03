@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buckshot Roulette</title>
+  
+  <style>
+    .player-list {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .player {
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #000;
+      width: 150px;
+    }
+    .gun {
+      margin: 20px auto;
+      display: block;
+      padding: 10px;
+      background-color: red;
+      color: white;
+      cursor: pointer;
+      width: 100px;
+      text-align: center;
+    }
+
+    .div-options {
+        border: 3px solid black;
+        width: fit-content;
+        padding: 30px;
+    }
+    
+    #target-options{
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        align-content: center;
+    }
+    </style>
+
+</head>
+<body>
+
+  <div id="players" class="player-list">
+    <div class="player" data-player="1">
+      <p>Você</p>
+      <p>Vida: <span class="life">3</span></p>
+    </div>
+    <div class="player" data-player="2">
+      <p>Jogador 2</p>
+      <p>Vida: <span class="life">3</span></p>
+    </div>
+    <div class="player" data-player="3">
+        <p>Jogador 3</p>
+        <p>Vida: <span class="life">3</span></p>
+      </div>
+      <div class="player" data-player="4">
+        <p>Jogador 4</p>
+        <p>Vida: <span class="life">3</span></p>
+      </div>
+    <!-- Adicione mais jogadores conforme necessário -->
+  </div>
+
+  <button id="gun">Clicar na arma</button>
+
+  <div id="options">
+    <h3>Escolha um jogador para atirar:</h3>
+    <div id="target-options"></div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
