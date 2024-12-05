@@ -3,7 +3,6 @@
 // Importação e configuração do Firebase Database
 import { ref, set, get, update, onValue, serverTimestamp, push, onChildAdded, onChildChanged, onChildRemoved } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-
 // --- Configurações do jogo ---
 
 // Variáveis do site
@@ -17,8 +16,6 @@ const descricaoDiv = document.getElementById("descricao-item");
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const playerList = document.getElementById('players-list')
-const mensagemContainer = document.getElementById('mensagensContainer')
-const mensagemElement = document.createElement('p')
 
 
 // Variáveis do jogo
@@ -99,6 +96,7 @@ const itens = [
 
 // Variáveis do Jogador
 let jogador = {
+    id: '',
     nickname: localStorage.getItem('nickname'),
     itens: [[[[], []], [[], []]], [[[], []], [[], []]]],
     vida: vida,
@@ -137,30 +135,31 @@ const jogadoresRef = ref(database, `salas/${salaId}/jogadores`)
 
 let adversarios = []
 
-get(jogadoresRef, (snapshot) => {
-    if (snapshot.val().nickname != jogador.nickname) {
-        adversarios.push(snapshot.val())
-        console.log('hoje nao')
-    }
-})
-
-onChildChanged(jogadoresRef, (snapshot) => {
-    if (snapshot.val().nickname != jogador.nickname) {
-        console.log(`Jogador Atualizado: ${snapshot.key}, ${snapshot.val()}`)
-        console.log(snapshot.val())
-        adversarios.push(snapshot.val())
-    }
-})
-
 // Funções usando banco de dados
 function adicionarJogador(salaId, jogador) {
-    set(jogadorRef, { vida: jogador.vida, itens: jogador.itens || [] })
-    .then(() => console.log(`${jogador.nickname} adicionado à sala ${salaId}`))
+    const playerRef = push(jogadoresRef)
+    const playerId = playerRef.key
+    set(jogadorRef, {
+        id: playerId,
+        nickname: jogador.nickname,
+        itens: jogador.itens,
+        vida: jogador.vida,
+        vivo: jogador.vivo,
+        suaVez: jogador.suaVez,
+        bloqueado: jogador.bloqueado
+    })
+    .then(() => {
+        console.log(`${jogador.nickname} adicionado à sala ${salaId}, com o ID: ${playerId}`)
+        adicionarMensagem('entrou no jogo')
+})
     .catch((err) => console.error("Erro ao adicionar jogador:", err));
+    jogador.id = playerId
+    console.log(jogador)
 }
 
 function atualizarDados(jogador){
     update(jogadorRef, {
+        nickname: jogador.nickname,
         itens: jogador.itens,
         vida: jogador.vida,
         vivo: jogador.vivo,
@@ -169,10 +168,12 @@ function atualizarDados(jogador){
     })
     .then(() => console.log(`${jogador.nickname} atualizou suas informações`))
     .catch((err) => console.error("Erro ao atualizar as iformações do jogador:", err));
+    get(jogadorRef).then((snapshot) => {
+        let dados = snapshot.val()
+        jogador.id = dados.id
+    })
+    console.log('Dados atualizados: ', jogador)
 }
-
-
-
 
 // Funções utilitárias
 function geradorNumeroBalas() {
@@ -311,19 +312,8 @@ function shootPlayer(playerId) {
     
     modal.classList.remove('show')
     overlay.classList.remove('show')
-    // if (lives > 0) {
-    //     lives--
-    //     liveSpan.innerText = lives
-
-    //     if (lives <= 0) {
-    //         alert(`Jogador ${playerId} está eliminado`)
-    //     } else {
-    //         alert(`Você atirou no Jogador ${playerId}`)
-    //     }
-    // }
 }
 
-// Prevenir que o usuário interaja com os itens atrás enquanto o modal estiver visível
 overlay.addEventListener('click', () => {
     modal.classList.remove('show');
     overlay.classList.remove('show');
@@ -443,7 +433,6 @@ function acaoBloqueio() {
         })
 }
 
-// Criação de itens na mesa
 function criarItens() {
     itensAtualizados = 0
     let cont = 0;
@@ -471,16 +460,14 @@ function criarItens() {
             }
             atualizarDados(jogador)
 
-            // Atualiza os atributos da imagem
             imgItens[cont].src = item_aleatorio.src;
             imgItens[cont].alt = `${item_aleatorio.nome}: ${item_aleatorio.descricao}`;
             imgItens[cont].setAttribute('data-item', `${item_aleatorio.nomealt}`)
 
-            // Eventos para a imagem
             const onMouseOver = (event) => {
                 descricaoDiv.style.display = "block";
                 descricaoDiv.style.left = event.pageX - 10 + "px";
-                descricaoDiv.style.top = event.pageY + 10 + "px"; // Desloca a div para baixo
+                descricaoDiv.style.top = event.pageY + 10 + "px";
                 descricaoDiv.innerHTML = `<strong>${item_aleatorio.nome}</strong><br>${item_aleatorio.descricao}`;
             };
 
@@ -489,7 +476,7 @@ function criarItens() {
             };
 
             const onClick = (event) => {
-                const img = event.target; // Elemento que disparou o evento
+                const img = event.target;
 
                 switch (event.target.dataset.item) {
                     case "vacina":
@@ -534,28 +521,22 @@ function criarItens() {
 
                 img.setAttribute('data-item', ``)
 
-                // Troca a imagem para "nada"
                 img.src = "../" + assets.imagens.item_nada;
                 img.alt = "Nada";
                 img.classList.toggle('nada')
 
-                // Oculta a descrição e limpa o conteúdo
                 descricaoDiv.style.display = "none";
                 descricaoDiv.innerHTML = "";
 
-                // Desvincula os eventos de descrição
                 img.removeEventListener("mouseover", onMouseOver);
                 img.removeEventListener("mouseout", onMouseOut);
 
-                // Atualiza o contador de itens atualizados
                 if (itensAtualizados > 0) {
                     itensAtualizados--;
                 }
 
             };
 
-
-            // Vincula os eventos
             imgItens[cont].addEventListener("mouseover", onMouseOver);
             imgItens[cont].addEventListener("mouseout", onMouseOut);
             imgItens[cont].addEventListener("click", onClick);
@@ -566,8 +547,7 @@ function criarItens() {
         }
         cont++;
     }
-    itensPegos = true
-    // console.log(mesa)       
+    itensPegos = true 
 }
 
 
@@ -581,10 +561,8 @@ document.addEventListener("mousemove", (event) => {
 });
 
 function novaRodada() {
-    // Verifica se o número máximo de rodadas foi alcançado
     if (rodada < maxRodadas) {
         if (cartucho_atual.length === 0) {
-            // Incrementa a rodada
             rodada++;
             update(salaRef, {
                 rodada: rodada
@@ -593,10 +571,8 @@ function novaRodada() {
             setTimeout(() => {
                 console.log(`Iniciando a rodada ${rodada}`);
     
-                // Criação de novo cartucho
                 criarCartuchoGeral();
     
-                // Atualiza o estado da caixa para aberta e habilita o evento de clique
                 caixa.src = assets.imagens.caixa_aberta;
                 caixa.classList.toggle('fechado')
                 caixa.classList.toggle('aberto')
@@ -638,14 +614,11 @@ window.onload = () => {
     atualizaVida()
     get(salaRef).then((snapshot) => {
         dadosSala = snapshot.val()
-        if (dadosSala.status != "jogando"){
-            if (dadosSala.jogadores?.hasOwnProperty(jogador.nickname)) {
-                console.log(`${jogador.nickname} já existe na sala`)
-            } else {
-                adicionarJogador(salaId, jogador)
-            }
+        if (dadosSala.jogadores?.hasOwnProperty(jogador.nickname)) {
+            console.log(`${jogador.nickname} já existe na sala`)
+            atualizarDados(jogador)
         } else {
-            console.log('A sala já está em andamento')
+            adicionarJogador(salaId, jogador)
         }
     }).catch(error => {
         console.error("Erro ao carregar os dados da sala:", error);
@@ -659,28 +632,9 @@ document.getElementById('pronto').onclick = () => {
         rodada: rodada,
         ordem: ordem
     })
-    get(jogadoresRef)
-        .then((snapshot) => {
-            let jogadores = snapshot.val()
-            console.log(jogadores)
-        })
-    novaRodada()
+    getAllPlayers()
 
-    // get(jogadoresRef)
-    //     .then((snapshot) => {
-    //         let jogadores = snapshot.val()
-    //         console.log(jogadores)
-    //         if (jogadores.count >= 2) {
-    //             update(salaRef, {
-    //                 status: 'jogando',
-    //                 rodada: rodada,
-    //                 ordem: ordem
-    //             })
-    //             novaRodada()
-    //         } else {
-    //             alert('Adicione ao menos mais 1 jogador para começar a partida')
-    //         }
-    //     })
+    novaRodada()
 }
 
 document.getElementById('sair-sala').onclick = () => {
@@ -703,13 +657,7 @@ document.getElementById('sair-sala').onclick = () => {
     })
 }
 
-
-
 // Adicionar mensagens
-
-// Template:
-// adicionarMensagem(``)
-
 function adicionarMensagem(textoMensagem) {
     push(mensagensRef, {
         jogador: jogador.nickname,
@@ -720,15 +668,45 @@ function adicionarMensagem(textoMensagem) {
 
 onChildAdded(mensagensRef, (snapshot) => {
     const mensagem = snapshot.val()
-    exibirMensagemNaTela(jogador.nickname, mensagem.texto, mensagem.timestamp)
+    exibirMensagemNaTela(mensagem.jogador, mensagem.texto, mensagem.timestamp)
     
 })
 
 function exibirMensagemNaTela(jogador, texto, timestamp) {
-    mensagemContainer.innerHTML += `${new Date(timestamp).toLocaleTimeString()} - O <strong class="nickname">${jogador}</strong> ${texto}`
+    const mensagemContainer = document.getElementById('mensagensContainer')
+    const mensagemElement = document.createElement('p')
+    
+    mensagemElement.innerHTML = `${new Date(timestamp).toLocaleTimeString()} - O <strong class="nickname">${jogador}</strong> ${texto}`
     mensagemContainer.appendChild(mensagemElement)
 
     mensagemContainer.scrollTop = mensagemContainer.scrollHeight
+}
+
+function getAllPlayers() {
+    get(jogadoresRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const players = snapshot.val();
+            console.log(`Todos os jogadores: `, players)
+
+            if (jogador.id){
+                const adversarios = Object.keys(players)
+                    .filter(playerId => players[playerId].id !== jogador.id)
+                    .map(playerId => ({
+                        id: players[playerId].id,
+                        nickname: players[playerId].nickname,
+                        vida: players[playerId].vida
+                    }));
+                console.log(adversarios)
+            } else {
+                console.error('Erro ao pegar o id do jogador atual!')
+                console.log(jogador.id)
+            }
+        } else {
+            console.log('Nenhum jogador encontrado')
+        }
+    }).catch((error) => {
+        console.error(`Erro ao obter jogadores: ${error}`)
+    })
 }
 
 // Fim.
